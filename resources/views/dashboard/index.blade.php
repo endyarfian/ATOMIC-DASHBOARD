@@ -138,7 +138,7 @@
         </div>
         <div class="side-label">Workspace</div>
         <a class="nav-link active" href="/" aria-current="page"><span class="nav-icon">▦</span><span class="nav-text">Overview</span></a>
-        <div class="nav-soon"><span class="nav-icon">▣</span><span class="nav-text">Devices</span><span class="soon-tag">Soon</span></div>
+        <a class="nav-link" href="{{ route('devices.index') }}"><span class="nav-icon">▣</span><span class="nav-text">Devices</span></a>
         <div class="nav-soon"><span class="nav-icon">♙</span><span class="nav-text">Operators</span><span class="soon-tag">Soon</span></div>
         <div class="nav-soon"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span><span class="soon-tag">Soon</span></div>
         <div class="nav-soon"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span><span class="soon-tag">Soon</span></div>
@@ -236,7 +236,7 @@
                 <div class="panel-head">
                     <div>
                         <div class="panel-title">Registered devices</div>
-                        <div class="panel-description">{{ number_format($devices->count()) }} device records</div>
+                        <div class="panel-description">{{ number_format($devices->count()) }} device records · <a href="{{ route('devices.index') }}" style="color:var(--cyan);font-weight:800">VIEW ALL →</a></div>
                     </div>
                     <span class="section-hint">FIRMWARE</span>
                 </div>
@@ -244,7 +244,7 @@
                     @forelse ($devices as $device)
                         <div class="device-row">
                             <div class="device-main">
-                                <div class="device-name">{{ $device->device_name }}</div>
+                                <div class="device-name"><a href="{{ route('devices.show', $device->device_id) }}" style="text-decoration:none;color:inherit">{{ $device->device_name }}</a></div>
                                 <div class="device-detail">{{ $device->device_id }} · FW {{ $device->firmware_version ?? '—' }}</div>
                                 <div class="device-detail">Last seen: {{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') : 'Never' }}</div>
                             </div>
