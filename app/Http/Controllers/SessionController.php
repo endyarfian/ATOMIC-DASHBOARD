@@ -15,7 +15,7 @@ class SessionController extends Controller
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
-            'status' => ['nullable', 'in:active,completed,incomplete'],
+            'status' => ['nullable', 'in:active,interrupted,completed,incomplete'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
