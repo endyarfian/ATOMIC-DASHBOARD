@@ -110,7 +110,7 @@
                 <div class="metric-note" style="margin:8px 0 16px">Average session duration: {{ $averageDuration !== null ? gmdate('H:i:s', (int) $averageDuration) : '—' }}</div>
                 <div class="section-head" style="margin:0 0 6px"><h2>Recent MQTT messages</h2><span>Latest 6</span></div>
                 @forelse ($recentMessages as $message)
-                    <div class="device"><div><div class="device-name">{{ \Illuminate\Support\Str::limit($message->topic, 36) }}</div><div class="device-meta">{{ $message->received_at ? \Illuminate\Support\Carbon::parse($message->received_at)->format('d M H:i:s') : '—' }}</div></div><span class="status {{ $message->processing_status }}">{{ $message->processing_status }}</span></div>
+                    <div class="device"><div><div class="device-name">{{ \Illuminate\Support\Str::limit($message->topic, 36) }}</div><div class="device-meta">{{ $message->received_at ? \Illuminate\Support\Carbon::parse($message->received_at, 'UTC')->setTimezone(config('app.timezone'))->format('d M H:i:s') : '—' }}</div></div><span class="status {{ $message->processing_status }}">{{ $message->processing_status }}</span></div>
                 @empty
                     <div class="empty">No MQTT messages recorded.</div>
                 @endforelse
