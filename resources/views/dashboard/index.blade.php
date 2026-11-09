@@ -144,7 +144,7 @@
         <a class="nav-link" href="{{ route('devices.index') }}"><span class="nav-icon">▣</span><span class="nav-text">Devices</span></a>
         <a class="nav-link" href="{{ route('operators.index') }}"><span class="nav-icon">♙</span><span class="nav-text">Operators</span></a>
         <a class="nav-link" href="{{ route('access-logs.index') }}"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span></a>
-        <div class="nav-soon"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span><span class="soon-tag">Soon</span></div>
+        <a class="nav-link" href="{{ route('sessions.index') }}"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span></a>
         <div class="nav-soon"><span class="nav-icon">⌁</span><span class="nav-text">MQTT monitor</span><span class="soon-tag">Soon</span></div>
         <div class="side-spacer"></div>
         <div class="source-box">
