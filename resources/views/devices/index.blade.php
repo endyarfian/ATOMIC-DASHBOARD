@@ -27,7 +27,7 @@
 <a class="nav-link" href="{{ route('dashboard') }}"><span class="nav-icon">▦</span><span class="nav-text">Overview</span></a>
 <a class="nav-link active" href="{{ route('devices.index') }}" aria-current="page"><span class="nav-icon">▣</span><span class="nav-text">Devices</span></a>
 <a class="nav-link" href="{{ route('operators.index') }}"><span class="nav-icon">♙</span><span class="nav-text">Operators</span></a>
-<div class="nav-soon"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span><span class="soon-tag">Soon</span></div>
+<a class="nav-link" href="{{ route('access-logs.index') }}"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span></a>
 <div class="nav-soon"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span><span class="soon-tag">Soon</span></div>
 <div class="nav-soon"><span class="nav-icon">⌁</span><span class="nav-text">MQTT monitor</span><span class="soon-tag">Soon</span></div>
 <div class="side-spacer"></div><div class="source-box"><div class="source-title">DATA SOURCE</div><div class="source-state"><span class="dot"></span> Read-only connected</div><div class="source-note">atomic_access database<br>Monitoring mode · no write access</div></div>
