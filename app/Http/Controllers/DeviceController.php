@@ -18,7 +18,7 @@ class DeviceController extends Controller
             'status' => ['nullable', 'in:online,offline'],
         ]);
 
-        $heartbeatCutoff = now()
+        $heartbeatCutoff = now('UTC')
             ->subSeconds(self::HEARTBEAT_TIMEOUT_SECONDS)
             ->toDateTimeString();
 
@@ -88,7 +88,7 @@ class DeviceController extends Controller
             ->where('device_id', $deviceId)
             ->firstOrFail();
 
-        $heartbeatCutoff = now()
+        $heartbeatCutoff = now('UTC')
             ->subSeconds(self::HEARTBEAT_TIMEOUT_SECONDS)
             ->toDateTimeString();
 
