@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\AccessSession;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Carbon;
 
 class SessionController extends Controller
 {
+    private const INTERRUPTED_TIMEOUT_SECONDS = 90;
+
     public function index(Request $request): View
     {
         $filters = $request->validate([
@@ -24,6 +27,7 @@ class SessionController extends Controller
                 'access_sessions.*',
                 'operators.operator_name',
                 'devices.device_name',
+                'devices.last_seen',
             ]);
 
         if (!empty($filters['q'])) {
@@ -38,7 +42,21 @@ class SessionController extends Controller
         }
 
         if (!empty($filters['status'])) {
-            $query->where('access_sessions.status', $filters['status']);
+            if ($filters['status'] === 'interrupted') {
+                $cutoff = now('UTC')->subSeconds(self::INTERRUPTED_TIMEOUT_SECONDS)->toDateTimeString();
+                $query->where('access_sessions.status', 'active')
+                    ->where(function ($builder) use ($cutoff) {
+                        $builder->whereNull('devices.last_seen')
+                            ->orWhere('devices.last_seen', '<', $cutoff);
+                    });
+            } elseif ($filters['status'] === 'active') {
+                $cutoff = now('UTC')->subSeconds(self::INTERRUPTED_TIMEOUT_SECONDS)->toDateTimeString();
+                $query->where('access_sessions.status', 'active')
+                    ->whereNotNull('devices.last_seen')
+                    ->where('devices.last_seen', '>=', $cutoff);
+            } else {
+                $query->where('access_sessions.status', $filters['status']);
+            }
         }
 
         if (!empty($filters['start_date'])) {
@@ -55,8 +73,40 @@ class SessionController extends Controller
             ->paginate(20)
             ->withQueryString();
 
+        $cutoff = now('UTC')->subSeconds(self::INTERRUPTED_TIMEOUT_SECONDS);
+        $sessions->getCollection()->transform(function ($session) use ($cutoff) {
+            $session->display_status = $session->status;
+
+            if ($session->status === 'active') {
+                $lastSeen = $session->last_seen
+                    ? Carbon::parse($session->last_seen, 'UTC')
+                    : null;
+
+                $session->display_status = $lastSeen && $lastSeen->greaterThanOrEqualTo($cutoff)
+                    ? 'active'
+                    : 'interrupted';
+            }
+
+            return $session;
+        });
+
         $totalSessions = AccessSession::query()->count();
-        $activeSessions = AccessSession::query()->where('status', 'active')->count();
+        $activeSessions = AccessSession::query()
+            ->join('devices', 'access_sessions.device_id', '=', 'devices.device_id')
+            ->where('access_sessions.status', 'active')
+            ->whereNotNull('devices.last_seen')
+            ->where('devices.last_seen', '>=', $cutoff->toDateTimeString())
+            ->count();
+
+        $interruptedSessions = AccessSession::query()
+            ->leftJoin('devices', 'access_sessions.device_id', '=', 'devices.device_id')
+            ->where('access_sessions.status', 'active')
+            ->where(function ($builder) use ($cutoff) {
+                $builder->whereNull('devices.last_seen')
+                    ->orWhere('devices.last_seen', '<', $cutoff->toDateTimeString());
+            })
+            ->count();
+
         $completedSessions = AccessSession::query()->where('status', 'completed')->count();
         $incompleteSessions = AccessSession::query()->where('status', 'incomplete')->count();
 
@@ -65,6 +115,7 @@ class SessionController extends Controller
             'filters',
             'totalSessions',
             'activeSessions',
+            'interruptedSessions',
             'completedSessions',
             'incompleteSessions'
         ));
@@ -79,9 +130,20 @@ class SessionController extends Controller
                 'access_sessions.*',
                 'operators.operator_name',
                 'devices.device_name',
+                'devices.last_seen',
             ])
             ->where('access_sessions.session_id', $sessionId)
             ->firstOrFail();
+
+        $session->display_status = $session->status;
+        if ($session->status === 'active') {
+            $lastSeen = $session->last_seen
+                ? Carbon::parse($session->last_seen, 'UTC')
+                : null;
+            $session->display_status = $lastSeen && $lastSeen->greaterThanOrEqualTo(
+                now('UTC')->subSeconds(self::INTERRUPTED_TIMEOUT_SECONDS)
+            ) ? 'active' : 'interrupted';
+        }
 
         return view('sessions.show', compact('session'));
     }
