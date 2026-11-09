@@ -8,8 +8,6 @@ use Illuminate\View\View;
 
 class SessionController extends Controller
 {
-    private const INTERRUPTED_TIMEOUT_SECONDS = 90;
-
     public function index(Request $request): View
     {
         // Snapshot stale sessions into the dashboard database. The source database
