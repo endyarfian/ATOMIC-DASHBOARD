@@ -23,9 +23,23 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $heartbeatCutoff = $now->copy()
+            ->subSeconds(60)
+            ->toDateTimeString();
+
         $devices = Device::query()
             ->orderBy('device_name')
             ->get();
+
+        // Derive connectivity from the latest heartbeat, not the persisted status.
+        $devices->each(function (Device $device) use ($heartbeatCutoff) {
+            $device->setAttribute(
+                'status',
+                $device->last_seen !== null && $device->last_seen >= $heartbeatCutoff
+                    ? 'online'
+                    : 'offline'
+            );
+        });
 
         $onlineDevices = $devices
             ->where('status', 'online')
