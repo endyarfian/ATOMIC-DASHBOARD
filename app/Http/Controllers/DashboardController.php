@@ -23,7 +23,7 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $heartbeatCutoff = $now->copy()
+        $heartbeatCutoff = now('UTC')
             ->subSeconds(60)
             ->toDateTimeString();
 
