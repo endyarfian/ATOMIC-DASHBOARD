@@ -82,7 +82,9 @@ class SessionController extends Controller
         $sessions->getCollection()->transform(function ($session) use ($cutoff) {
             $session->display_status = $session->status;
 
-            if ($session->status === 'incomplete') {\n                $session->display_status = 'interrupted';\n            } elseif ($session->status === 'active') {
+            if ($session->status === 'incomplete') {
+                $session->display_status = 'interrupted';
+            } elseif ($session->status === 'active') {
                 $lastSeen = $session->last_seen
                     ? Carbon::parse($session->last_seen, 'UTC')
                     : null;
@@ -105,15 +107,19 @@ class SessionController extends Controller
 
         $interruptedSessions = AccessSession::query()
             ->leftJoin('devices', 'access_sessions.device_id', '=', 'devices.device_id')
-            ->where('access_sessions.status', 'active')
             ->where(function ($builder) use ($cutoff) {
-                $builder->whereNull('devices.last_seen')
-                    ->orWhere('devices.last_seen', '<', $cutoff->toDateTimeString());
+                $builder->where('access_sessions.status', 'incomplete')
+                    ->orWhere(function ($active) use ($cutoff) {
+                        $active->where('access_sessions.status', 'active')
+                            ->where(function ($stale) use ($cutoff) {
+                                $stale->whereNull('devices.last_seen')
+                                    ->orWhere('devices.last_seen', '<', $cutoff->toDateTimeString());
+                            });
+                    });
             })
             ->count();
 
         $completedSessions = AccessSession::query()->where('status', 'completed')->count();
-        $incompleteSessions = AccessSession::query()->where('status', 'incomplete')->count();
 
         return view('sessions.index', compact(
             'sessions',
@@ -121,8 +127,7 @@ class SessionController extends Controller
             'totalSessions',
             'activeSessions',
             'interruptedSessions',
-            'completedSessions',
-            'incompleteSessions'
+            'completedSessions'
         ));
     }
 
@@ -141,7 +146,9 @@ class SessionController extends Controller
             ->firstOrFail();
 
         $session->display_status = $session->status;
-        if ($session->status === 'incomplete') {\n            $session->display_status = 'interrupted';\n        } elseif ($session->status === 'active') {
+        if ($session->status === 'incomplete') {
+            $session->display_status = 'interrupted';
+        } elseif ($session->status === 'active') {
             $lastSeen = $session->last_seen
                 ? Carbon::parse($session->last_seen, 'UTC')
                 : null;
