@@ -38,4 +38,8 @@
 @endforelse
 </tbody></table></div></section>
 <footer>A.T.O.M. · atomic_access is queried in read-only mode · Asia/Jakarta</footer>
-</main></div></body></html>
+</main></div><script>
+    // Refresh connection status periodically so heartbeat timeouts appear without manual reload.
+    window.setInterval(() => window.location.reload(), 30000);
+</script>
+</body></html>
