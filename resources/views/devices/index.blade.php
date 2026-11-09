@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#080d16">
+<title>Devices | A.T.O.M.</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#080d16;color:#e8eef7;--line:#223044;--muted:#8392a8;--muted2:#607087;--lime:#b7f36b;--cyan:#62d9e8;--red:#ff7188}
+*{box-sizing:border-box}body{margin:0;min-width:320px;background:radial-gradient(ellipse at 78% -15%,rgba(46,105,130,.2),transparent 38%),#080d16}a{color:inherit;text-decoration:none}
+.app{min-height:100vh;display:grid;grid-template-columns:252px minmax(0,1fr)}.sidebar{position:sticky;top:0;height:100vh;padding:26px 17px 18px;display:flex;flex-direction:column;background:rgba(10,17,28,.96);border-right:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;padding:0 9px 30px}.brand-mark{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#d1ff8b,#86c94b);color:#101a20;font-size:20px;font-weight:950}.brand-name{font-size:15px;font-weight:850;letter-spacing:.17em}.brand-caption{margin-top:4px;color:var(--muted2);font-size:9px;letter-spacing:.19em}
+.side-label{padding:15px 11px 9px;color:#53647a;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.nav-link,.nav-soon{min-height:43px;display:flex;align-items:center;gap:12px;margin:3px 0;padding:0 12px;border-radius:10px;color:#91a0b5;font-size:12px}.nav-link.active{color:var(--lime);background:rgba(183,243,107,.1);border:1px solid rgba(183,243,107,.12)}.nav-icon{width:19px;text-align:center;font-size:15px}.nav-soon{color:#536176}.soon-tag{margin-left:auto;font-size:8px}.side-spacer{flex:1}.source-box{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0d1724}.source-title{color:#8293a8;font-size:9px;font-weight:800;letter-spacing:.15em}.source-state{display:flex;align-items:center;gap:8px;margin-top:11px;color:var(--lime);font-size:11px;font-weight:700}.dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px rgba(183,243,107,.75)}.source-note{margin-top:8px;color:var(--muted2);font-size:9px;line-height:1.6}
+.main{min-width:0;padding:30px clamp(18px,3.4vw,48px) 34px}.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:24px;border-bottom:1px solid rgba(34,48,68,.8)}.eyebrow{color:var(--cyan);font-size:9px;font-weight:850;letter-spacing:.2em;text-transform:uppercase}h1{margin:8px 0 5px;color:#f3f7fc;font-size:clamp(25px,3vw,34px);line-height:1.1;letter-spacing:-.055em}.subtitle{color:var(--muted);font-size:11px}.live{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(183,243,107,.24);border-radius:8px;background:rgba(183,243,107,.08);color:var(--lime);font-size:9px;font-weight:850;letter-spacing:.13em}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:26px 0 13px}.section-head h2{margin:0;color:#dce5f1;font-size:12px;font-weight:800}.hint{color:var(--muted2);font-size:9px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.stat,.panel{min-width:0;padding:17px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,rgba(20,33,49,.98),rgba(13,22,35,.98))}.stat-label{color:#9baabd;font-size:10px}.stat-value{margin-top:12px;color:#f4f7fb;font-size:29px;font-weight:800;letter-spacing:-.055em}.green{color:var(--lime)}.red{color:var(--red)}
+.filters{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:15px}.field{min-height:39px;padding:0 12px;border:1px solid #2a3b50;border-radius:8px;background:#0b1522;color:#e8eef7;font-size:11px}.search{width:min(340px,100%)}.btn{min-height:39px;display:inline-flex;align-items:center;justify-content:center;padding:0 14px;border:1px solid rgba(183,243,107,.25);border-radius:8px;background:rgba(183,243,107,.1);color:var(--lime);font-size:10px;font-weight:800;cursor:pointer}.btn.secondary{border-color:#2a3b50;background:#142033;color:#aab8ca}
+.panel{padding:0;overflow:hidden}.table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{padding:13px 14px;border-bottom:1px solid #2a394d;color:#718198;font-size:8px;font-weight:800;letter-spacing:.12em;text-align:left;text-transform:uppercase}td{padding:14px;border-bottom:1px solid rgba(34,48,68,.68);color:#c8d3e1;font-size:10px}tbody tr:last-child td{border-bottom:0}.device-name{color:#e5edf7;font-weight:750}.device-id{margin-top:4px;color:var(--muted2);font-size:9px}.status{display:inline-block;padding:5px 8px;border:1px solid rgba(183,243,107,.18);border-radius:6px;background:rgba(183,243,107,.08);color:var(--lime);font-size:8px;font-weight:850;text-transform:uppercase}.status.offline{border-color:rgba(255,113,136,.2);background:rgba(255,113,136,.08);color:var(--red)}.detail-link{color:var(--cyan);font-size:9px;font-weight:750}.empty{padding:28px;color:var(--muted2);text-align:center;font-size:11px}.pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:9px}.pagination a{padding:8px 11px;border:1px solid #2a3b50;border-radius:7px;color:#dce5f1}.pagination a.disabled{opacity:.35;pointer-events:none}footer{display:flex;justify-content:space-between;gap:12px;margin-top:22px;padding-top:14px;border-top:1px solid rgba(34,48,68,.7);color:#596a80;font-size:8px}
+@media(max-width:820px){.app{grid-template-columns:66px minmax(0,1fr)}.sidebar{padding:20px 8px 14px}.brand{justify-content:center;padding:0 0 25px}.brand-copy,.side-label,.nav-text,.soon-tag,.source-box{display:none}.nav-link,.nav-soon{justify-content:center;padding:0}.nav-icon{font-size:17px}.main{padding:24px 17px}}@media(max-width:600px){.main{padding:20px 12px 25px}.topbar{flex-direction:column}.stats{grid-template-columns:1fr 1fr;gap:8px}.stat{padding:12px}.stat-value{font-size:25px}.search{width:100%}.filters{align-items:stretch}.filters .field,.filters .btn{flex:1}footer{flex-direction:column}}@media(max-width:360px){.app{grid-template-columns:54px minmax(0,1fr)}.main{padding-left:9px;padding-right:9px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="brand"><div class="brand-mark">A.</div><div class="brand-copy"><div class="brand-name">A.T.O.M.</div><div class="brand-caption">BIOMETRIC ACCESS</div></div></div>
+<div class="side-label">Workspace</div>
+<a class="nav-link" href="{{ route('dashboard') }}"><span class="nav-icon">▦</span><span class="nav-text">Overview</span></a>
+<a class="nav-link active" href="{{ route('devices.index') }}" aria-current="page"><span class="nav-icon">▣</span><span class="nav-text">Devices</span></a>
+<div class="nav-soon"><span class="nav-icon">♙</span><span class="nav-text">Operators</span><span class="soon-tag">Soon</span></div>
+<div class="nav-soon"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span><span class="soon-tag">Soon</span></div>
+<div class="nav-soon"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span><span class="soon-tag">Soon</span></div>
+<div class="nav-soon"><span class="nav-icon">⌁</span><span class="nav-text">MQTT monitor</span><span class="soon-tag">Soon</span></div>
+<div class="side-spacer"></div><div class="source-box"><div class="source-title">DATA SOURCE</div><div class="source-state"><span class="dot"></span> Read-only connected</div><div class="source-note">atomic_access database<br>Monitoring mode · no write access</div></div>
+</aside>
+<main class="main">
+<header class="topbar"><div><div class="eyebrow">Biometric access intelligence / inventory</div><h1>Devices</h1><div class="subtitle">Registered biometric access devices and connection status.</div></div><div class="live"><span class="dot"></span> DEVICE INVENTORY</div></header>
+<div class="section-head"><h2>Device status</h2><span class="hint">Live records · atomic_access</span></div>
+<section class="stats">
+<article class="stat"><div class="stat-label">Total devices</div><div class="stat-value">{{ number_format($totalDevices) }}</div></article>
+<article class="stat"><div class="stat-label">Online</div><div class="stat-value green">{{ number_format($onlineDevices) }}</div></article>
+<article class="stat"><div class="stat-label">Offline</div><div class="stat-value red">{{ number_format($offlineDevices) }}</div></article>
+</section>
+<div class="section-head"><h2>Registered devices</h2><span class="hint">{{ $devices->total() }} matching records</span></div>
+<section class="panel">
+<form class="filters" method="GET" action="{{ route('devices.index') }}" style="padding:16px 16px 0">
+<input class="field search" type="search" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Search device ID, name, firmware...">
+<select class="field" name="status" aria-label="Filter status">
+<option value="">All status</option><option value="online" @selected(($filters['status'] ?? '') === 'online')>Online</option><option value="offline" @selected(($filters['status'] ?? '') === 'offline')>Offline</option>
+</select>
+<button class="btn" type="submit">Apply filter</button><a class="btn secondary" href="{{ route('devices.index') }}">Reset</a>
+</form>
+<div class="table-wrap"><table><thead><tr><th>Device</th><th>Status</th><th>Firmware</th><th>Last seen (WIB)</th><th>Registered</th><th>Action</th></tr></thead><tbody>
+@forelse($devices as $device)
+<tr><td><div class="device-name">{{ $device->device_name ?: 'Unnamed device' }}</div><div class="device-id">{{ $device->device_id }}</div></td><td><span class="status {{ $device->status === 'online' ? '' : 'offline' }}">{{ $device->status ?: 'unknown' }}</span></td><td>{{ $device->firmware_version ?: '—' }}</td><td>{{ $device->last_seen ? \\Illuminate\\Support\\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') : 'Never' }}</td><td>{{ $device->created_at ? \\Illuminate\\Support\\Carbon::parse($device->created_at)->format('d M Y') : '—' }}</td><td><a class="detail-link" href="{{ route('devices.show', $device->device_id) }}">View details →</a></td></tr>
+@empty
+<tr><td colspan="6" class="empty">No devices match the selected filters.</td></tr>
+@endforelse
+</tbody></table></div>
+<div class="pagination"><span>Page {{ $devices->currentPage() }} of {{ max(1, $devices->lastPage()) }}</span><div style="display:flex;gap:8px"><a class="{{ $devices->onFirstPage() ? 'disabled' : '' }}" href="{{ $devices->previousPageUrl() ?: '#' }}">← Previous</a><a class="{{ $devices->hasMorePages() ? '' : 'disabled' }}" href="{{ $devices->nextPageUrl() ?: '#' }}">Next →</a></div></div>
+</section>
+<footer><span>A.T.O.M. · Biometric Access Management</span><span>Read-only monitoring · Asia/Jakarta</span></footer>
+</main></div>
+</body></html>
