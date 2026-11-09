@@ -1,11 +1,11 @@
 <?php
 
-namespace App\\Http\\Controllers;
+namespace App\Http\Controllers;
 
-use App\\Models\\AccessLog;
-use App\\Models\\Device;
-use Illuminate\\Http\\Request;
-use Illuminate\\View\\View;
+use App\Models\AccessLog;
+use App\Models\Device;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DeviceController extends Controller
 {
