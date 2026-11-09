@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccessLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\OperatorController;
