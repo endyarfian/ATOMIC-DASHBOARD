@@ -16,5 +16,5 @@ Artisan::command('sessions:detect-interruptions', function () {
 })->purpose('Persist sessions whose device heartbeat has timed out');
 
 Schedule::command('sessions:detect-interruptions')
-    ->everyMinute()
+    ->everyTenSeconds()
     ->withoutOverlapping();
