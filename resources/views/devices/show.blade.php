@@ -20,19 +20,19 @@
 <section class="grid">
 <article class="card"><div class="label">Connection status</div><div class="value {{ $device->status === 'online' ? 'green' : 'red' }}">{{ strtoupper($device->status ?: 'UNKNOWN') }}</div></article>
 <article class="card"><div class="label">Firmware version</div><div class="value">{{ $device->firmware_version ?: '—' }}</div></article>
-<article class="card"><div class="label">Last heartbeat / last seen</div><div class="value" style="font-size:15px">{{ $device->last_seen ? \\Illuminate\\Support\\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') . ' WIB' : 'Never' }}</div></article>
+<article class="card"><div class="label">Last heartbeat / last seen</div><div class="value" style="font-size:15px">{{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') . ' WIB' : 'Never' }}</div></article>
 <article class="card"><div class="label">Total access events</div><div class="value">{{ number_format($totalEvents) }}</div></article>
 <article class="card"><div class="label">Granted events</div><div class="value green">{{ number_format($grantedEvents) }}</div></article>
 <article class="card"><div class="label">Denied events</div><div class="value red">{{ number_format($deniedEvents) }}</div></article>
 </section>
 <section class="panel"><h2>Device information</h2><div class="table-wrap"><table><tbody>
 <tr><th>Device ID</th><td>{{ $device->device_id }}</td></tr><tr><th>Device name</th><td>{{ $device->device_name ?: '—' }}</td></tr>
-<tr><th>Registered at</th><td>{{ $device->created_at ? \\Illuminate\\Support\\Carbon::parse($device->created_at)->format('d M Y, H:i:s') . ' WIB' : '—' }}</td></tr>
-<tr><th>Last database update</th><td>{{ $device->updated_at ? \\Illuminate\\Support\\Carbon::parse($device->updated_at)->format('d M Y, H:i:s') . ' WIB' : '—' }}</td></tr>
+<tr><th>Registered at</th><td>{{ $device->created_at ? \Illuminate\Support\Carbon::parse($device->created_at)->format('d M Y, H:i:s') . ' WIB' : '—' }}</td></tr>
+<tr><th>Last database update</th><td>{{ $device->updated_at ? \Illuminate\Support\Carbon::parse($device->updated_at)->format('d M Y, H:i:s') . ' WIB' : '—' }}</td></tr>
 </tbody></table></div></section>
 <section class="panel"><h2>Recent access events · latest 10</h2><div class="table-wrap"><table><thead><tr><th>Time</th><th>Operator</th><th>Fingerprint slot</th><th>Result</th><th>Reason</th></tr></thead><tbody>
 @forelse($recentEvents as $event)
-<tr><td>{{ $event->event_at ? \\Illuminate\\Support\\Carbon::parse($event->event_at)->format('d M Y, H:i:s') : '—' }}</td><td>{{ $event->operator_name ?: $event->operator_id ?: 'Unknown' }}</td><td>{{ $event->fingerprint_slot ?? '—' }}</td><td><span class="status {{ $event->result === 'granted' ? '' : 'denied' }}">{{ $event->result }}</span></td><td>{{ $event->reason ?: '—' }}</td></tr>
+<tr><td>{{ $event->event_at ? \Illuminate\Support\Carbon::parse($event->event_at)->format('d M Y, H:i:s') : '—' }}</td><td>{{ $event->operator_name ?: $event->operator_id ?: 'Unknown' }}</td><td>{{ $event->fingerprint_slot ?? '—' }}</td><td><span class="status {{ $event->result === 'granted' ? '' : 'denied' }}">{{ $event->result }}</span></td><td>{{ $event->reason ?: '—' }}</td></tr>
 @empty
 <tr><td colspan="5" class="empty">No access events recorded for this device.</td></tr>
 @endforelse
