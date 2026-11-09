@@ -15,4 +15,8 @@ Route::middleware('atom.access')->group(function () {
     Route::get('/operators/{operatorId}', [OperatorController::class, 'show'])
         ->where('operatorId', '[A-Za-z0-9._-]+')
         ->name('operators.show');
+    Route::get('/access-logs', [AccessLogController::class, 'index'])->name('access-logs.index');
+    Route::get('/access-logs/{logId}', [AccessLogController::class, 'show'])
+        ->whereNumber('logId')
+        ->name('access-logs.show');
 });
