@@ -1,8 +1,8 @@
 <?php
 
-use App\\Http\\Controllers\\DashboardController;
-use App\\Http\\Controllers\\DeviceController;
-use Illuminate\\Support\\Facades\\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeviceController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('atom.access')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
