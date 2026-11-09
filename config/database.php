@@ -84,6 +84,23 @@ return [
             ]) : [],
         ],
 
+        'atomic_access' => [
+            'driver' => 'mysql',
+            'url' => env('ATOMIC_ACCESS_DATABASE_URL'),
+            'host' => env('ATOMIC_ACCESS_DB_HOST', '127.0.0.1'),
+            'port' => env('ATOMIC_ACCESS_DB_PORT', '3306'),
+            'database' => env('ATOMIC_ACCESS_DB_DATABASE', 'atomic_access'),
+            'username' => env('ATOMIC_ACCESS_DB_USERNAME'),
+            'password' => env('ATOMIC_ACCESS_DB_PASSWORD'),
+            'unix_socket' => env('ATOMIC_ACCESS_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
