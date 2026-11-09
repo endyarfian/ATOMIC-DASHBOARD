@@ -4,185 +4,251 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#080d18">
-    <title>A.T.O.M. Dashboard</title>
+    <meta name="theme-color" content="#080d16">
+    <title>A.T.O.M. | Access Control Dashboard</title>
     <style>
-        :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb;background:#080d18;font-synthesis:none}
-        *{box-sizing:border-box}
-        body{margin:0;background:radial-gradient(circle at 80% -10%,#17243b 0,transparent 34%),#080d18}
-        .shell{display:flex;min-height:100vh}
-        .sidebar{width:248px;flex:0 0 248px;padding:28px 18px;border-right:1px solid #1e293b;background:#0b1220;display:flex;flex-direction:column}
-        .brand{display:flex;align-items:center;gap:12px;padding:0 10px 30px}
-        .brand-mark{width:38px;height:38px;border-radius:12px;background:#a3e635;color:#101827;display:grid;place-items:center;font-weight:900;letter-spacing:-2px}
-        .brand strong{display:block;font-size:15px;letter-spacing:.12em}
-        .brand small{color:#64748b;font-size:10px;letter-spacing:.18em}
-        .nav-label{padding:14px 12px 8px;color:#64748b;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
-        .nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;margin:3px 0;border-radius:9px;color:#94a3b8;font-size:13px;text-decoration:none}
-        .nav-item.active{background:#1a2a25;color:#bef264}
-        .nav-item .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
-        .side-bottom{margin-top:auto;padding:14px 12px;border:1px solid #1e293b;border-radius:12px;color:#94a3b8;font-size:11px;line-height:1.6}
-        .main{flex:1;min-width:0;padding:30px clamp(18px,4vw,54px) 42px}
-        .top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:30px}
-        .eyebrow{font-size:10px;letter-spacing:.2em;color:#84cc16;font-weight:800;text-transform:uppercase}
-        .top h1{font-size:26px;margin:7px 0 5px;letter-spacing:-.04em}
-        .sub{color:#64748b;font-size:12px}
-        .top-actions{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
-        .live{display:flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid #294331;border-radius:999px;background:#102019;color:#bef264;font-size:11px;font-weight:700;white-space:nowrap}
-        .live i{width:7px;height:7px;background:#84cc16;border-radius:50%;box-shadow:0 0 12px #84cc16}
-        .refresh-note{font-size:10px;color:#64748b}
-        .section-head{display:flex;justify-content:space-between;align-items:end;margin:28px 0 14px;gap:12px}
-        .section-head h2{font-size:14px;margin:0}
-        .section-head span{font-size:11px;color:#64748b}
-        .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-        .card{background:linear-gradient(145deg,#111c2d,#0d1523);border:1px solid #1e2b40;border-radius:14px;padding:18px;min-width:0}
-        .metric-top{display:flex;justify-content:space-between;align-items:center;color:#94a3b8;font-size:11px;gap:8px}
-        .metric-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:9px;background:#1c2b3d;color:#bef264;font-size:14px}
-        .metric-value{font-size:29px;font-weight:750;letter-spacing:-.05em;margin:14px 0 5px;color:#f8fafc}
-        .metric-note{font-size:10px;color:#64748b;line-height:1.6}
-        .good{color:#a3e635}
-        .bad{color:#fb7185}
-        .two-col{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.85fr);gap:14px}
-        .chart-card{padding:20px}
-        .bars{height:170px;display:flex;align-items:end;gap:clamp(8px,2vw,20px);padding:20px 4px 0}
-        .bar-group{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px;min-width:0}
-        .bar-stack{height:132px;width:min(100%,34px);display:flex;flex-direction:column;justify-content:end;overflow:hidden;border-radius:6px 6px 3px 3px;background:#172438}
-        .bar-granted{background:#84cc16;width:100%;display:block}
-        .bar-denied{background:#fb7185;width:100%;display:block}
-        .bar-label{font-size:10px;color:#94a3b8}
-        .legend{display:flex;gap:16px;font-size:10px;color:#94a3b8}
-        .legend i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:6px}
-        .device-list{display:flex;flex-direction:column;gap:12px}
-        .device{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #1e293b}
-        .device:last-child{border:0}
-        .device-name{font-size:12px;font-weight:650}
-        .device-meta{font-size:10px;color:#64748b;margin-top:4px}
-        .pill{font-size:9px;padding:5px 8px;border-radius:999px;background:#17251b;color:#bef264;text-transform:uppercase;font-weight:800;letter-spacing:.08em;white-space:nowrap}
-        .pill.offline{background:#301b25;color:#fda4af}
-        .table-wrap{overflow-x:auto}
-        .data-table{width:100%;border-collapse:collapse;white-space:nowrap}
-        .data-table th{text-align:left;color:#64748b;font-size:9px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:12px 10px;border-bottom:1px solid #263449}
-        .data-table td{font-size:11px;padding:13px 10px;border-bottom:1px solid #1b283a;color:#cbd5e1}
-        .data-table tr:last-child td{border:0}
-        .muted{color:#64748b!important}
-        .status{font-size:9px;font-weight:800;text-transform:uppercase}
-        .status.granted,.status.processed{color:#a3e635}
-        .status.denied,.status.failed{color:#fb7185}
-        .status.pending{color:#fbbf24}
-        .bottom-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.8fr);gap:14px}
-        .empty{padding:22px;text-align:center;color:#64748b;font-size:11px}
-        .health-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px 0 16px}
-        .health-value{font-size:23px;font-weight:750;letter-spacing:-.04em;margin-top:4px}
-        .progress{height:5px;background:#1e293b;border-radius:99px;overflow:hidden;margin-top:8px}
-        .progress span{height:100%;display:block;background:#84cc16;border-radius:99px}
-        footer{margin-top:24px;color:#475569;font-size:10px;display:flex;justify-content:space-between;gap:10px}
-        @media(max-width:1050px){.two-col,.bottom-grid{grid-template-columns:1fr}}
-        @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-        @media(max-width:700px){
-            .sidebar{width:62px;flex-basis:62px;padding:20px 8px}
-            .brand{padding:0 4px 28px}
-            .brand-copy,.nav-label,.nav-text,.side-bottom{display:none}
-            .brand-mark{width:42px;height:42px}
-            .nav-item{justify-content:center;padding:13px 8px}
-            .main{padding:22px 14px}
-            .top{align-items:flex-start}
-            .top h1{font-size:22px}
-            .live{font-size:9px;padding:8px}
-            .grid{gap:9px}
-            .card{padding:14px}
-            .metric-value{font-size:24px}
-            .section-head{margin-top:22px}
-            footer{flex-direction:column}
+        :root {
+            color-scheme: dark;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #080d16;
+            color: #e8eef7;
+            font-synthesis: none;
+            --bg: #080d16;
+            --panel: #101927;
+            --panel-soft: #0d1623;
+            --line: #223044;
+            --muted: #8392a8;
+            --muted-2: #607087;
+            --lime: #b7f36b;
+            --cyan: #62d9e8;
+            --red: #ff7188;
+            --amber: #f4c76b;
         }
-        @media(max-width:390px){.top{flex-direction:column}.top-actions{align-items:flex-start}.grid{grid-template-columns:1fr 1fr}.metric-top{font-size:10px}}
+        * { box-sizing: border-box; }
+        body { margin: 0; min-width: 320px; background: radial-gradient(ellipse at 78% -15%, rgba(46, 105, 130, .20), transparent 38%), var(--bg); }
+        a { color: inherit; }
+        .app { min-height: 100vh; display: grid; grid-template-columns: 252px minmax(0, 1fr); }
+        .sidebar { position: sticky; top: 0; height: 100vh; padding: 26px 17px 18px; display: flex; flex-direction: column; background: rgba(10, 17, 28, .96); border-right: 1px solid var(--line); }
+        .brand { display: flex; align-items: center; gap: 12px; padding: 0 9px 30px; }
+        .brand-mark { width: 43px; height: 43px; display: grid; place-items: center; border-radius: 13px; background: linear-gradient(145deg, #d1ff8b, #86c94b); color: #101a20; font-size: 20px; font-weight: 950; letter-spacing: -2px; box-shadow: 0 7px 24px rgba(183, 243, 107, .12); }
+        .brand-name { font-size: 15px; font-weight: 850; letter-spacing: .17em; }
+        .brand-caption { margin-top: 4px; color: var(--muted-2); font-size: 9px; letter-spacing: .19em; }
+        .side-label { padding: 15px 11px 9px; color: #53647a; font-size: 9px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+        .nav-link, .nav-soon { min-height: 43px; display: flex; align-items: center; gap: 12px; margin: 3px 0; padding: 0 12px; border-radius: 10px; color: #91a0b5; font-size: 12px; text-decoration: none; }
+        .nav-link.active { color: var(--lime); background: linear-gradient(90deg, rgba(183, 243, 107, .13), rgba(183, 243, 107, .035)); border: 1px solid rgba(183, 243, 107, .12); }
+        .nav-icon { width: 19px; text-align: center; font-size: 15px; }
+        .nav-soon { color: #536176; }
+        .soon-tag { margin-left: auto; font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
+        .side-spacer { flex: 1; }
+        .source-box { padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #0d1724; }
+        .source-title { color: #8293a8; font-size: 9px; font-weight: 800; letter-spacing: .15em; }
+        .source-state { display: flex; align-items: center; gap: 8px; margin-top: 11px; color: var(--lime); font-size: 11px; font-weight: 700; }
+        .state-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 12px rgba(183, 243, 107, .75); }
+        .source-note { margin-top: 8px; color: var(--muted-2); font-size: 9px; line-height: 1.6; }
+        .main { min-width: 0; padding: 30px clamp(18px, 3.4vw, 48px) 34px; }
+        .topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid rgba(34, 48, 68, .8); }
+        .eyebrow { color: var(--cyan); font-size: 9px; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; }
+        h1 { margin: 8px 0 5px; color: #f3f7fc; font-size: clamp(25px, 3vw, 34px); line-height: 1.1; letter-spacing: -.055em; }
+        .subtitle { color: var(--muted); font-size: 11px; }
+        .top-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
+        .live-badge { display: inline-flex; align-items: center; gap: 9px; padding: 9px 13px; border: 1px solid rgba(183, 243, 107, .24); border-radius: 8px; background: rgba(183, 243, 107, .08); color: var(--lime); font-size: 9px; font-weight: 850; letter-spacing: .13em; white-space: nowrap; }
+        .live-badge .state-dot { width: 6px; height: 6px; }
+        .updated { color: var(--muted-2); font-size: 9px; white-space: nowrap; }
+        .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 26px 0 13px; }
+        .section-heading h2 { margin: 0; color: #dce5f1; font-size: 12px; font-weight: 800; letter-spacing: .035em; }
+        .section-hint { color: var(--muted-2); font-size: 9px; }
+        .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .metric { position: relative; min-height: 126px; overflow: hidden; padding: 16px 17px; border: 1px solid var(--line); border-radius: 13px; background: linear-gradient(145deg, rgba(20, 33, 49, .98), rgba(13, 22, 35, .98)); }
+        .metric:after { position: absolute; right: -28px; bottom: -52px; width: 110px; height: 110px; border: 1px solid rgba(98, 217, 232, .08); border-radius: 50%; content: ""; }
+        .metric-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #9baabd; font-size: 10px; font-weight: 650; }
+        .metric-icon { width: 29px; height: 29px; display: grid; place-items: center; border: 1px solid #2b3b50; border-radius: 9px; background: #172538; color: var(--cyan); font-size: 13px; }
+        .metric-number { margin-top: 13px; color: #f4f7fb; font-size: 29px; font-weight: 800; line-height: 1; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+        .metric-number.lime { color: var(--lime); }
+        .metric-number.red { color: var(--red); }
+        .metric-foot { margin-top: 8px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+        .good { color: var(--lime); }
+        .bad { color: var(--red); }
+        .cyan { color: var(--cyan); }
+        .overview-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(290px, .85fr); gap: 13px; }
+        .panel { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 13px; background: linear-gradient(145deg, rgba(16, 26, 40, .98), rgba(12, 20, 32, .98)); }
+        .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+        .panel-title { color: #e1e9f3; font-size: 11px; font-weight: 800; }
+        .panel-description { margin-top: 4px; color: var(--muted-2); font-size: 9px; }
+        .legend { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 9px; white-space: nowrap; }
+        .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+        .legend-dot { width: 7px; height: 7px; border-radius: 2px; }
+        .chart { height: 174px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; padding: 12px 4px 0; }
+        .chart-day { min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; }
+        .chart-column { width: min(100%, 35px); height: 139px; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; border-radius: 6px 6px 3px 3px; background: #1a293b; }
+        .chart-denied { display: block; width: 100%; background: var(--red); min-height: 0; }
+        .chart-granted { display: block; width: 100%; background: var(--lime); min-height: 0; }
+        .chart-label { color: #8999ad; font-size: 9px; }
+        .device-list { display: flex; flex-direction: column; }
+        .device-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(34, 48, 68, .75); }
+        .device-row:last-child { border-bottom: 0; }
+        .device-main { min-width: 0; }
+        .device-name { overflow: hidden; color: #e1e9f3; font-size: 10px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+        .device-detail { margin-top: 4px; color: var(--muted-2); font-size: 9px; overflow-wrap: anywhere; }
+        .device-status { flex: 0 0 auto; padding: 5px 8px; border: 1px solid rgba(183, 243, 107, .18); border-radius: 6px; background: rgba(183, 243, 107, .08); color: var(--lime); font-size: 8px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+        .device-status.offline { border-color: rgba(255, 113, 136, .2); background: rgba(255, 113, 136, .08); color: var(--red); }
+        .activity-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, .8fr); gap: 13px; }
+        .table-wrap { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th { padding: 10px 9px; border-bottom: 1px solid #2a394d; color: #718198; font-size: 8px; font-weight: 800; letter-spacing: .12em; text-align: left; text-transform: uppercase; }
+        td { padding: 12px 9px; border-bottom: 1px solid rgba(34, 48, 68, .68); color: #c8d3e1; font-size: 9px; }
+        tbody tr:last-child td { border-bottom: 0; }
+        .result { display: inline-block; padding: 4px 7px; border-radius: 5px; background: rgba(183, 243, 107, .08); color: var(--lime); font-size: 8px; font-weight: 850; text-transform: uppercase; }
+        .result.denied, .result.failed { background: rgba(255, 113, 136, .08); color: var(--red); }
+        .result.pending { background: rgba(244, 199, 107, .08); color: var(--amber); }
+        .muted { color: var(--muted-2); }
+        .health-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-bottom: 17px; }
+        .health-box { padding: 12px; border: 1px solid #25354a; border-radius: 9px; background: #0c1725; }
+        .health-label { color: var(--muted); font-size: 9px; }
+        .health-number { margin-top: 6px; color: #f0f5fb; font-size: 22px; font-weight: 800; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+        .subsection { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 15px 0 8px; }
+        .subsection strong { color: #dce5f1; font-size: 10px; }
+        .subsection span { color: var(--muted-2); font-size: 9px; }
+        .progress-track { height: 7px; overflow: hidden; border-radius: 99px; background: #243247; }
+        .progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #7dc94e, #c4f47b); }
+        .progress-caption { display: flex; justify-content: space-between; gap: 8px; margin-top: 7px; color: var(--muted); font-size: 9px; }
+        .mqtt-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(34, 48, 68, .68); }
+        .mqtt-row:last-child { border-bottom: 0; }
+        .mqtt-topic { overflow: hidden; color: #d7e1ed; font-size: 9px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+        .mqtt-meta { margin-top: 4px; color: var(--muted-2); font-size: 8px; }
+        .mqtt-status { flex: 0 0 auto; color: var(--lime); font-size: 8px; font-weight: 850; text-transform: uppercase; }
+        .mqtt-status.failed { color: var(--red); }
+        .mqtt-status.pending { color: var(--amber); }
+        .empty { padding: 20px 10px; color: var(--muted-2); font-size: 10px; text-align: center; }
+        footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(34, 48, 68, .7); color: #596a80; font-size: 8px; }
+        @media (max-width: 1120px) { .app { grid-template-columns: 218px minmax(0, 1fr); } .overview-grid, .activity-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 820px) { .app { grid-template-columns: 66px minmax(0, 1fr); } .sidebar { padding: 20px 8px 14px; } .brand { justify-content: center; padding: 0 0 25px; } .brand-copy, .side-label, .nav-text, .soon-tag, .source-box { display: none; } .nav-link, .nav-soon { justify-content: center; padding: 0; } .nav-icon { font-size: 17px; } .main { padding: 24px 17px; } }
+        @media (max-width: 600px) { .main { padding: 20px 12px 25px; } .topbar { flex-direction: column; gap: 13px; } .top-meta { align-items: flex-start; flex-direction: row; flex-wrap: wrap; } .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .metric { min-height: 116px; padding: 12px; } .metric-number { font-size: 25px; } .metric-head { font-size: 9px; } .metric-icon { width: 25px; height: 25px; } .panel { padding: 13px; } .section-heading { margin-top: 21px; } .chart { gap: 5px; } .legend { gap: 8px; } footer { flex-direction: column; } }
+        @media (max-width: 360px) { .app { grid-template-columns: 54px minmax(0, 1fr); } .sidebar { padding-left: 5px; padding-right: 5px; } .main { padding-left: 9px; padding-right: 9px; } .metric-number { font-size: 22px; } .metric { padding: 10px; } }
     </style>
 </head>
 <body>
-<div class="shell">
+<div class="app">
     <aside class="sidebar">
-        <div class="brand"><div class="brand-mark">A.</div><div class="brand-copy"><strong>A.T.O.M.</strong><small>ACCESS CONTROL</small></div></div>
-        <div class="nav-label">Workspace</div>
-        <a class="nav-item active" href="/"><span class="dot"></span><span class="nav-text">Overview</span></a>
-        <div class="nav-item"><span class="dot"></span><span class="nav-text">Devices · soon</span></div>
-        <div class="nav-item"><span class="dot"></span><span class="nav-text">Operators · soon</span></div>
-        <div class="nav-item"><span class="dot"></span><span class="nav-text">Access logs · soon</span></div>
-        <div class="nav-item"><span class="dot"></span><span class="nav-text">Sessions · soon</span></div>
-        <div class="nav-item"><span class="dot"></span><span class="nav-text">MQTT monitor · soon</span></div>
-        <div class="side-bottom">SYSTEM MONITOR<br><span class="good">●</span> Database connection active<br><span class="muted">Read-only source access</span></div>
+        <div class="brand">
+            <div class="brand-mark">A.</div>
+            <div class="brand-copy">
+                <div class="brand-name">A.T.O.M.</div>
+                <div class="brand-caption">BIOMETRIC ACCESS</div>
+            </div>
+        </div>
+        <div class="side-label">Workspace</div>
+        <a class="nav-link active" href="/" aria-current="page"><span class="nav-icon">▦</span><span class="nav-text">Overview</span></a>
+        <div class="nav-soon"><span class="nav-icon">▣</span><span class="nav-text">Devices</span><span class="soon-tag">Soon</span></div>
+        <div class="nav-soon"><span class="nav-icon">♙</span><span class="nav-text">Operators</span><span class="soon-tag">Soon</span></div>
+        <div class="nav-soon"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span><span class="soon-tag">Soon</span></div>
+        <div class="nav-soon"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span><span class="soon-tag">Soon</span></div>
+        <div class="nav-soon"><span class="nav-icon">⌁</span><span class="nav-text">MQTT monitor</span><span class="soon-tag">Soon</span></div>
+        <div class="side-spacer"></div>
+        <div class="source-box">
+            <div class="source-title">DATA SOURCE</div>
+            <div class="source-state"><span class="state-dot"></span> Read-only connected</div>
+            <div class="source-note">atomic_access database<br>Monitoring mode · no write access</div>
+        </div>
     </aside>
 
     <main class="main">
-        <header class="top">
+        <header class="topbar">
             <div>
                 <div class="eyebrow">Biometric access intelligence</div>
                 <h1>System Overview</h1>
-                <div class="sub">Operational status and access activity · {{ now()->translatedFormat('l, d F Y') }}</div>
+                <div class="subtitle">Operational command center · {{ now()->translatedFormat('l, d F Y') }}</div>
             </div>
-            <div class="top-actions">
-                <div class="live"><i></i> LIVE DATA</div>
-                <div class="refresh-note">Auto refresh · 30 seconds</div>
+            <div class="top-meta">
+                <div class="live-badge"><span class="state-dot"></span> SYSTEM MONITORING</div>
+                <div class="updated">LIVE DATA · AUTO REFRESH 30s</div>
             </div>
         </header>
 
-        <div class="section-head"><h2>Access summary</h2><span>Live counts from atomic_access</span></div>
-        <section class="grid">
-            <article class="card">
-                <div class="metric-top">Registered devices <span class="metric-icon">⌘</span></div>
-                <div class="metric-value">{{ number_format($devices->count()) }}</div>
-                <div class="metric-note"><span class="good">{{ number_format($onlineDevices) }} online</span> · <span class="bad">{{ number_format($offlineDevices) }} offline</span></div>
+        <div class="section-heading">
+            <h2>Access summary</h2>
+            <span class="section-hint">Current records · atomic_access</span>
+        </div>
+        <section class="metrics">
+            <article class="metric">
+                <div class="metric-head">Registered devices <span class="metric-icon">▣</span></div>
+                <div class="metric-number">{{ number_format($devices->count()) }}</div>
+                <div class="metric-foot"><span class="good">{{ number_format($onlineDevices) }} online</span> · <span class="bad">{{ number_format($offlineDevices) }} offline</span></div>
             </article>
-            <article class="card">
-                <div class="metric-top">Active operators <span class="metric-icon">♙</span></div>
-                <div class="metric-value">{{ number_format($activeOperators) }}</div>
-                <div class="metric-note">{{ number_format($totalOperators) }} registered operators</div>
+            <article class="metric">
+                <div class="metric-head">Active operators <span class="metric-icon">♙</span></div>
+                <div class="metric-number">{{ number_format($activeOperators) }}</div>
+                <div class="metric-foot">{{ number_format($totalOperators) }} registered operators</div>
             </article>
-            <article class="card">
-                <div class="metric-top">Access granted <span class="metric-icon">✓</span></div>
-                <div class="metric-value good">{{ number_format($grantedLogs) }}</div>
-                <div class="metric-note">{{ number_format($totalLogs) }} total access events</div>
+            <article class="metric">
+                <div class="metric-head">Access granted <span class="metric-icon">✓</span></div>
+                <div class="metric-number lime">{{ number_format($grantedLogs) }}</div>
+                <div class="metric-foot">{{ number_format($totalLogs) }} total access events</div>
             </article>
-            <article class="card">
-                <div class="metric-top">Access denied <span class="metric-icon">×</span></div>
-                <div class="metric-value bad">{{ number_format($deniedLogs) }}</div>
-                <div class="metric-note">Rejected fingerprint attempts</div>
+            <article class="metric">
+                <div class="metric-head">Access denied <span class="metric-icon">×</span></div>
+                <div class="metric-number red">{{ number_format($deniedLogs) }}</div>
+                <div class="metric-foot">Rejected fingerprint attempts</div>
             </article>
-            <article class="card">
-                <div class="metric-top">Today's access <span class="metric-icon">◷</span></div>
-                <div class="metric-value">{{ number_format($todayLogs) }}</div>
-                <div class="metric-note"><span class="good">{{ number_format($todayGranted) }} granted</span> · <span class="bad">{{ number_format($todayDenied) }} denied</span></div>
+            <article class="metric">
+                <div class="metric-head">Today's access <span class="metric-icon">◷</span></div>
+                <div class="metric-number">{{ number_format($todayLogs) }}</div>
+                <div class="metric-foot"><span class="good">{{ number_format($todayGranted) }} granted</span> · <span class="bad">{{ number_format($todayDenied) }} denied</span></div>
             </article>
-            <article class="card">
-                <div class="metric-top">MQTT processed <span class="metric-icon">⌁</span></div>
-                <div class="metric-value">{{ number_format($processedMessages) }}</div>
-                <div class="metric-note">{{ number_format($totalMessages) }} total messages received</div>
+            <article class="metric">
+                <div class="metric-head">MQTT processed <span class="metric-icon">⌁</span></div>
+                <div class="metric-number cyan">{{ number_format($processedMessages) }}</div>
+                <div class="metric-foot">{{ number_format($totalMessages) }} total messages received</div>
             </article>
         </section>
 
-        <div class="section-head"><h2>Activity & device health</h2><span>Last 7 days · WIB</span></div>
-        <section class="two-col">
-            <article class="card chart-card">
-                <div class="section-head" style="margin:0 0 8px"><h2>Access activity</h2><div class="legend"><span><i style="background:#84cc16"></i>Granted</span><span><i style="background:#fb7185"></i>Denied</span></div></div>
-                <div class="bars">
+        <div class="section-heading">
+            <h2>Activity & device health</h2>
+            <span class="section-hint">Last 7 days · WIB</span>
+        </div>
+        <section class="overview-grid">
+            <article class="panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Access activity</div>
+                        <div class="panel-description">Daily granted and denied events</div>
+                    </div>
+                    <div class="legend">
+                        <span class="legend-item"><i class="legend-dot" style="background:var(--lime)"></i>Granted</span>
+                        <span class="legend-item"><i class="legend-dot" style="background:var(--red)"></i>Denied</span>
+                    </div>
+                </div>
+                <div class="chart">
                     @foreach ($activity as $day)
-                        @php($grantedHeight = ($day['granted'] / $maxActivity) * 132)
-                        @php($deniedHeight = ($day['denied'] / $maxActivity) * 132)
-                        <div class="bar-group" title="{{ $day['date'] }}: {{ $day['total'] }} events">
-                            <div class="bar-stack"><span class="bar-denied" style="height:{{ $deniedHeight }}px"></span><span class="bar-granted" style="height:{{ $grantedHeight }}px"></span></div>
-                            <span class="bar-label">{{ $day['label'] }}</span>
+                        @php($grantedHeight = ($day['granted'] / $maxActivity) * 139)
+                        @php($deniedHeight = ($day['denied'] / $maxActivity) * 139)
+                        <div class="chart-day" title="{{ $day['date'] }}: {{ $day['total'] }} events">
+                            <div class="chart-column">
+                                <span class="chart-denied" style="height:{{ $deniedHeight }}px"></span>
+                                <span class="chart-granted" style="height:{{ $grantedHeight }}px"></span>
+                            </div>
+                            <span class="chart-label">{{ $day['label'] }}</span>
                         </div>
                     @endforeach
                 </div>
             </article>
-            <article class="card">
-                <div class="section-head" style="margin:0 0 8px"><h2>Registered devices</h2><span>{{ $devices->count() }} total</span></div>
+
+            <article class="panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Registered devices</div>
+                        <div class="panel-description">{{ number_format($devices->count()) }} device records</div>
+                    </div>
+                    <span class="section-hint">FIRMWARE</span>
+                </div>
                 <div class="device-list">
                     @forelse ($devices as $device)
-                        <div class="device">
-                            <div>
+                        <div class="device-row">
+                            <div class="device-main">
                                 <div class="device-name">{{ $device->device_name }}</div>
-                                <div class="device-meta">{{ $device->device_id }} · FW {{ $device->firmware_version ?? '—' }}</div>
-                                <div class="device-meta">Last seen: {{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') : 'Never' }}</div>
+                                <div class="device-detail">{{ $device->device_id }} · FW {{ $device->firmware_version ?? '—' }}</div>
+                                <div class="device-detail">Last seen: {{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') : 'Never' }}</div>
                             </div>
-                            <span class="pill {{ $device->status === 'online' ? '' : 'offline' }}">{{ $device->status }}</span>
+                            <span class="device-status {{ $device->status === 'online' ? '' : 'offline' }}">{{ $device->status }}</span>
                         </div>
                     @empty
                         <div class="empty">No devices registered.</div>
@@ -191,20 +257,31 @@
             </article>
         </section>
 
-        <div class="section-head"><h2>Recent activity</h2><span>Latest records from source database</span></div>
-        <section class="bottom-grid">
-            <article class="card">
-                <div class="section-head" style="margin:0 0 8px"><h2>Access events</h2><span>{{ number_format($totalLogs) }} records</span></div>
+        <div class="section-heading">
+            <h2>Recent activity</h2>
+            <span class="section-hint">Latest events and message pipeline</span>
+        </div>
+        <section class="activity-grid">
+            <article class="panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Access events</div>
+                        <div class="panel-description">{{ number_format($totalLogs) }} total records · latest 8 shown</div>
+                    </div>
+                    <span class="section-hint">ACCESS LOG</span>
+                </div>
                 <div class="table-wrap">
-                    <table class="data-table">
-                        <thead><tr><th>Time</th><th>Operator</th><th>Device</th><th>Result</th><th>Reason</th></tr></thead>
+                    <table>
+                        <thead>
+                            <tr><th>Time</th><th>Operator</th><th>Device</th><th>Result</th><th>Reason</th></tr>
+                        </thead>
                         <tbody>
                         @forelse ($recentLogs as $log)
                             <tr>
                                 <td>{{ $log->event_at ? \Illuminate\Support\Carbon::parse($log->event_at)->format('d M, H:i:s') : '—' }}</td>
                                 <td>{{ $log->operator_name ?: $log->operator_id ?: 'Unknown' }}</td>
                                 <td>{{ $log->device_id }}</td>
-                                <td><span class="status {{ $log->result }}">{{ $log->result }}</span></td>
+                                <td><span class="result {{ $log->result }}">{{ $log->result }}</span></td>
                                 <td class="muted">{{ $log->reason ?: '—' }}</td>
                             </tr>
                         @empty
@@ -214,40 +291,61 @@
                     </table>
                 </div>
             </article>
-            <article class="card">
-                <div class="section-head" style="margin:0 0 8px"><h2>Session & MQTT health</h2></div>
-                <div class="health-stats">
-                    <div><div class="metric-note">Active sessions</div><div class="health-value">{{ number_format($activeSessions) }}</div></div>
-                    <div><div class="metric-note">Completed sessions</div><div class="health-value">{{ number_format($completedSessions) }}</div></div>
+
+            <article class="panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Session & MQTT health</div>
+                        <div class="panel-description">Processing overview</div>
+                    </div>
+                    <span class="section-hint">PIPELINE</span>
                 </div>
-                <div class="metric-note">Average session duration: <strong style="color:#cbd5e1">{{ $averageDurationFormatted }}</strong></div>
-                <div class="section-head" style="margin:18px 0 6px"><h2>MQTT processing</h2><span>{{ number_format($totalMessages) }} total</span></div>
+                <div class="health-pair">
+                    <div class="health-box">
+                        <div class="health-label">Active sessions</div>
+                        <div class="health-number">{{ number_format($activeSessions) }}</div>
+                    </div>
+                    <div class="health-box">
+                        <div class="health-label">Completed sessions</div>
+                        <div class="health-number">{{ number_format($completedSessions) }}</div>
+                    </div>
+                </div>
+                <div class="health-label">Average session duration</div>
+                <div class="health-number" style="font-size:17px;margin-top:5px">{{ $averageDurationFormatted }}</div>
+
                 @php($mqttRate = $totalMessages > 0 ? min(100, ($processedMessages / $totalMessages) * 100) : 0)
-                <div class="metric-note">{{ number_format($processedMessages) }} of {{ number_format($totalMessages) }} messages processed</div>
-                <div class="progress"><span style="width:{{ $mqttRate }}%"></span></div>
-                <div class="section-head" style="margin:18px 0 6px"><h2>Recent MQTT messages</h2><span>Latest 6</span></div>
+                <div class="subsection"><strong>MQTT processing</strong><span>{{ number_format($totalMessages) }} messages</span></div>
+                <div class="progress-track"><div class="progress-fill" style="width:{{ $mqttRate }}%"></div></div>
+                <div class="progress-caption">
+                    <span>{{ number_format($processedMessages) }} processed</span>
+                    <span>{{ number_format($mqttRate, 1) }}%</span>
+                </div>
+
+                <div class="subsection"><strong>Recent MQTT messages</strong><span>Latest 6</span></div>
                 @forelse ($recentMessages as $message)
-                    <div class="device">
-                        <div>
-                            <div class="device-name">{{ \Illuminate\Support\Str::limit($message->topic, 36) }}</div>
-                            <div class="device-meta">{{ $message->device_id }} · {{ $message->received_at ? \Illuminate\Support\Carbon::parse($message->received_at, 'UTC')->setTimezone(config('app.timezone'))->format('d M H:i:s') : '—' }} WIB</div>
+                    <div class="mqtt-row">
+                        <div style="min-width:0">
+                            <div class="mqtt-topic">{{ \Illuminate\Support\Str::limit($message->topic, 38) }}</div>
+                            <div class="mqtt-meta">{{ $message->device_id }} · {{ $message->received_at ? \Illuminate\Support\Carbon::parse($message->received_at, 'UTC')->setTimezone(config('app.timezone'))->format('d M H:i:s') : '—' }} WIB</div>
                         </div>
-                        <span class="status {{ $message->processing_status }}">{{ $message->processing_status }}</span>
+                        <span class="mqtt-status {{ $message->processing_status }}">{{ $message->processing_status }}</span>
                     </div>
                 @empty
                     <div class="empty">No MQTT messages recorded.</div>
                 @endforelse
             </article>
         </section>
-        <footer><span>A.T.O.M. · Biometric Access Management</span><span>Source: atomic_access · Read only · Asia/Jakarta</span></footer>
+
+        <footer>
+            <span>A.T.O.M. · Biometric Access Management</span>
+            <span>Source: atomic_access · Read-only monitoring · Asia/Jakarta</span>
+        </footer>
     </main>
 </div>
 <script>
-    // Refresh dashboard data without adding any write operation to the source database.
+    // Read-only dashboard refresh. No source database write operations are performed.
     window.setInterval(() => {
-        if (!document.hidden) {
-            window.location.reload();
-        }
+        if (!document.hidden) window.location.reload();
     }, 30000);
 </script>
 </body>
