@@ -57,4 +57,8 @@
 </section>
 <footer><span>A.T.O.M. · Biometric Access Management</span><span>Read-only monitoring · Asia/Jakarta</span></footer>
 </main></div>
+<script>
+    // Refresh connection status periodically so heartbeat timeouts appear without manual reload.
+    window.setInterval(() => window.location.reload(), 30000);
+</script>
 </body></html>
