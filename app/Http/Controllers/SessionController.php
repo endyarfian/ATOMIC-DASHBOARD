@@ -15,7 +15,7 @@ class SessionController extends Controller
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
-            'status' => ['nullable', 'in:active,interrupted,completed,incomplete'],
+            'status' => ['nullable', 'in:active,interrupted,completed'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
@@ -44,11 +44,16 @@ class SessionController extends Controller
         if (!empty($filters['status'])) {
             if ($filters['status'] === 'interrupted') {
                 $cutoff = now('UTC')->subSeconds(self::INTERRUPTED_TIMEOUT_SECONDS)->toDateTimeString();
-                $query->where('access_sessions.status', 'active')
-                    ->where(function ($builder) use ($cutoff) {
-                        $builder->whereNull('devices.last_seen')
-                            ->orWhere('devices.last_seen', '<', $cutoff);
-                    });
+                $query->where(function ($builder) use ($cutoff) {
+                    $builder->where('access_sessions.status', 'incomplete')
+                        ->orWhere(function ($active) use ($cutoff) {
+                            $active->where('access_sessions.status', 'active')
+                                ->where(function ($stale) use ($cutoff) {
+                                    $stale->whereNull('devices.last_seen')
+                                        ->orWhere('devices.last_seen', '<', $cutoff);
+                                });
+                        });
+                });
             } elseif ($filters['status'] === 'active') {
                 $cutoff = now('UTC')->subSeconds(self::INTERRUPTED_TIMEOUT_SECONDS)->toDateTimeString();
                 $query->where('access_sessions.status', 'active')
@@ -77,7 +82,7 @@ class SessionController extends Controller
         $sessions->getCollection()->transform(function ($session) use ($cutoff) {
             $session->display_status = $session->status;
 
-            if ($session->status === 'active') {
+            if ($session->status === 'incomplete') {\n                $session->display_status = 'interrupted';\n            } elseif ($session->status === 'active') {
                 $lastSeen = $session->last_seen
                     ? Carbon::parse($session->last_seen, 'UTC')
                     : null;
@@ -136,7 +141,7 @@ class SessionController extends Controller
             ->firstOrFail();
 
         $session->display_status = $session->status;
-        if ($session->status === 'active') {
+        if ($session->status === 'incomplete') {\n            $session->display_status = 'interrupted';\n        } elseif ($session->status === 'active') {
             $lastSeen = $session->last_seen
                 ? Carbon::parse($session->last_seen, 'UTC')
                 : null;
