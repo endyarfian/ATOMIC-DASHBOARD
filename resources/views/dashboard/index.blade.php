@@ -282,7 +282,7 @@
                         @forelse ($recentLogs as $log)
                             <tr>
                                 <td>{{ $log->event_at ? \Illuminate\Support\Carbon::parse($log->event_at)->format('d M, H:i:s') : '—' }}</td>
-                                <td>{{ $log->operator_name ?: $log->operator_id ?: 'Unknown' }}</td>
+                                <td>{{ $log->operator_name ?: $log->operator_db_id ?: 'Unknown' }}</td>
                                 <td>{{ $log->device_id }}</td>
                                 <td><span class="result {{ $log->result }}">{{ $log->result }}</span></td>
                                 <td class="muted">{{ $log->reason ?: '—' }}</td>
@@ -307,6 +307,14 @@
                     <div class="health-box">
                         <div class="health-label">Active sessions</div>
                         <div class="health-number">{{ number_format($activeSessions) }}</div>
+                    </div>
+                    <div class="health-box">
+                        <div class="health-label">Orphaned sessions · operator removed</div>
+                        <div class="health-number">{{ number_format($orphanedSessions) }}</div>
+                    </div>
+                    <div class="health-box">
+                        <div class="health-label">Interrupted sessions</div>
+                        <div class="health-number">{{ number_format($interruptedSessions) }}</div>
                     </div>
                     <div class="health-box">
                         <div class="health-label">Completed sessions</div>
