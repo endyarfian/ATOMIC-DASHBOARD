@@ -7,6 +7,7 @@ use App\Models\AccessSession;
 use App\Models\Device;
 use App\Models\MqttMessage;
 use App\Models\Operator;
+use App\Services\SessionInterruptionDetector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -17,21 +18,9 @@ class DashboardController extends Controller
         $now = now();
         $today = $now->copy()->startOfDay();
 
-        /*
-        |--------------------------------------------------------------------------
-        | DEVICES
-        |--------------------------------------------------------------------------
-        */
+        $heartbeatCutoff = now('UTC')->subSeconds(60)->toDateTimeString();
+        $devices = Device::query()->orderBy('device_name')->get();
 
-        $heartbeatCutoff = now('UTC')
-            ->subSeconds(60)
-            ->toDateTimeString();
-
-        $devices = Device::query()
-            ->orderBy('device_name')
-            ->get();
-
-        // Derive connectivity from the latest heartbeat, not the persisted status.
         $devices->each(function (Device $device) use ($heartbeatCutoff) {
             $device->setAttribute(
                 'status',
@@ -41,81 +30,68 @@ class DashboardController extends Controller
             );
         });
 
-        $onlineDevices = $devices
-            ->where('status', 'online')
-            ->count();
-
-        $offlineDevices = $devices
-            ->where('status', 'offline')
-            ->count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | OPERATORS
-        |--------------------------------------------------------------------------
-        */
+        $onlineDevices = $devices->where('status', 'online')->count();
+        $offlineDevices = $devices->where('status', 'offline')->count();
 
         $totalOperators = Operator::query()->count();
-
-        $activeOperators = Operator::query()
-            ->where('status', 'active')
-            ->count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ACCESS LOGS
-        |--------------------------------------------------------------------------
-        */
+        $activeOperators = Operator::query()->where('status', 'active')->count();
+        $inactiveOperators = Operator::query()->where('status', 'inactive')->count();
 
         $totalLogs = AccessLog::query()->count();
+        $grantedLogs = AccessLog::query()->where('result', 'granted')->count();
+        $deniedLogs = AccessLog::query()->where('result', 'denied')->count();
 
-        $grantedLogs = AccessLog::query()
-            ->where('result', 'granted')
-            ->count();
-
-        $deniedLogs = AccessLog::query()
-            ->where('result', 'denied')
-            ->count();
-
-        // Today's access statistics
         $todayLogs = AccessLog::query()
             ->where('event_at', '>=', $today->toDateTimeString())
             ->count();
-
         $todayGranted = AccessLog::query()
             ->where('event_at', '>=', $today->toDateTimeString())
             ->where('result', 'granted')
             ->count();
-
         $todayDenied = AccessLog::query()
             ->where('event_at', '>=', $today->toDateTimeString())
             ->where('result', 'denied')
             ->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ACCESS SESSIONS
-        |--------------------------------------------------------------------------
-        */
+        $interruptedIds = app(SessionInterruptionDetector::class)->detect();
 
-        $activeSessions = AccessSession::query()
-            ->where('status', 'active')
+        $orphanedSessionIds = DB::connection('atomic_access')
+            ->table('access_sessions as sessions')
+            ->leftJoin('operators', 'sessions.operator_db_id', '=', 'operators.operator_db_id')
+            ->where('sessions.status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('operators.operator_db_id')
+                    ->orWhere('operators.status', '!=', 'active');
+            })
+            ->pluck('sessions.session_id')
+            ->map(static fn ($id) => (string) $id)
+            ->all();
+
+        $activeSessions = DB::connection('atomic_access')
+            ->table('access_sessions as sessions')
+            ->join('operators', 'sessions.operator_db_id', '=', 'operators.operator_db_id')
+            ->where('sessions.status', 'active')
+            ->where('operators.status', 'active')
+            ->whereNotIn('sessions.session_id', $interruptedIds)
             ->count();
 
-        $completedSessions = AccessSession::query()
-            ->where('status', 'completed')
+        $orphanedSessions = count($orphanedSessionIds);
+
+        $interruptedSessions = DB::connection('atomic_access')
+            ->table('access_sessions')
+            ->whereIn('session_id', $interruptedIds)
+            ->whereNotIn('session_id', $orphanedSessionIds)
+            ->where('status', '!=', 'completed')
             ->count();
 
-        // Keep original variable for compatibility with existing Blade view.
+        $completedSessions = AccessSession::query()->where('status', 'completed')->count();
+        $totalSessions = AccessSession::query()->count();
+
         $averageDuration = AccessSession::query()
             ->whereNotNull('duration_seconds')
             ->avg('duration_seconds');
+        $averageDuration = $averageDuration !== null ? (int) round($averageDuration) : null;
 
-        $averageDuration = $averageDuration !== null
-            ? (int) round($averageDuration)
-            : null;
-
-        // Human-readable duration without 24-hour wrapping.
         if ($averageDuration !== null) {
             $days = intdiv($averageDuration, 86400);
             $hours = intdiv($averageDuration % 86400, 3600);
@@ -129,31 +105,14 @@ class DashboardController extends Controller
             $averageDurationFormatted = '—';
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | RECENT ACCESS EVENTS
-        |--------------------------------------------------------------------------
-        */
-
         $recentLogs = AccessLog::query()
             ->orderByDesc('event_at')
+            ->orderByDesc('id')
             ->limit(8)
             ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | MQTT MESSAGES
-        |--------------------------------------------------------------------------
-        */
-
         $recentMessages = MqttMessage::query()
-            ->select([
-                'id',
-                'device_id',
-                'topic',
-                'received_at',
-                'processing_status',
-            ])
+            ->select(['id', 'device_id', 'topic', 'received_at', 'processing_status'])
             ->orderByDesc('id')
             ->limit(6)
             ->get();
@@ -161,96 +120,59 @@ class DashboardController extends Controller
         $processedMessages = MqttMessage::query()
             ->where('processing_status', 'processed')
             ->count();
-
         $totalMessages = MqttMessage::query()->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | SEVEN-DAY ACTIVITY
-        |--------------------------------------------------------------------------
-        */
-
-        $startDate = $now->copy()
-            ->subDays(6)
-            ->startOfDay();
-
+        $startDate = $now->copy()->subDays(6)->startOfDay();
         $activityRows = DB::connection('atomic_access')
             ->table('access_logs')
             ->selectRaw('DATE(event_at) as activity_date')
             ->selectRaw('COUNT(*) as total')
-            ->selectRaw(
-                "SUM(CASE WHEN result = 'granted' THEN 1 ELSE 0 END) as granted"
-            )
-            ->selectRaw(
-                "SUM(CASE WHEN result = 'denied' THEN 1 ELSE 0 END) as denied"
-            )
-            ->where(
-                'event_at',
-                '>=',
-                $startDate->toDateTimeString()
-            )
+            ->selectRaw("SUM(CASE WHEN result = 'granted' THEN 1 ELSE 0 END) as granted")
+            ->selectRaw("SUM(CASE WHEN result = 'denied' THEN 1 ELSE 0 END) as denied")
+            ->where('event_at', '>=', $startDate->toDateTimeString())
             ->groupByRaw('DATE(event_at)')
             ->get()
             ->keyBy('activity_date');
 
-        $activity = collect(range(6, 0))
-            ->map(function (int $daysAgo) use ($now, $activityRows) {
-                $date = $now->copy()
-                    ->subDays($daysAgo)
-                    ->startOfDay();
+        $activity = collect(range(6, 0))->map(function (int $daysAgo) use ($now, $activityRows) {
+            $date = $now->copy()->subDays($daysAgo)->startOfDay();
+            $row = $activityRows->get($date->toDateString());
 
-                $key = $date->toDateString();
+            return [
+                'label' => $date->translatedFormat('D'),
+                'date' => $date->format('d M'),
+                'total' => (int) ($row->total ?? 0),
+                'granted' => (int) ($row->granted ?? 0),
+                'denied' => (int) ($row->denied ?? 0),
+            ];
+        });
 
-                $row = $activityRows->get($key);
-
-                return [
-                    'label' => $date->translatedFormat('D'),
-                    'date' => $date->format('d M'),
-                    'total' => (int) ($row->total ?? 0),
-                    'granted' => (int) ($row->granted ?? 0),
-                    'denied' => (int) ($row->denied ?? 0),
-                ];
-            });
-
-        $maxActivity = max(
-            1,
-            (int) $activity->max('total')
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DASHBOARD VIEW
-        |--------------------------------------------------------------------------
-        */
+        $maxActivity = max(1, (int) $activity->max('total'));
 
         return view('dashboard.index', compact(
             'devices',
             'onlineDevices',
             'offlineDevices',
-
             'totalOperators',
             'activeOperators',
-
+            'inactiveOperators',
             'totalLogs',
             'grantedLogs',
             'deniedLogs',
-
             'todayLogs',
             'todayGranted',
             'todayDenied',
-
+            'totalSessions',
             'activeSessions',
+            'orphanedSessions',
+            'interruptedSessions',
             'completedSessions',
-
             'averageDuration',
             'averageDurationFormatted',
-
             'recentLogs',
             'recentMessages',
-
             'processedMessages',
             'totalMessages',
-
             'activity',
             'maxActivity'
         ));
