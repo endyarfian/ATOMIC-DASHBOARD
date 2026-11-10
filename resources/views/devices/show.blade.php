@@ -35,7 +35,7 @@
 </tbody></table></div></section>
 <section class="panel"><h2>Recent access events · latest 10</h2><div class="table-wrap"><table><thead><tr><th>Time</th><th>Operator</th><th>Fingerprint slot</th><th>Result</th><th>Reason</th></tr></thead><tbody>
 @forelse($recentEvents as $event)
-<tr><td>{{ $event->event_at ? \Illuminate\Support\Carbon::parse($event->event_at)->format('d M Y, H:i:s') : '—' }}</td><td>{{ $event->operator_name ?: $event->operator_id ?: 'Unknown' }}</td><td>{{ $event->fingerprint_slot ?? '—' }}</td><td><span class="status {{ $event->result === 'granted' ? '' : 'denied' }}">{{ $event->result }}</span></td><td>{{ $event->reason ?: '—' }}</td></tr>
+<tr><td>{{ $event->event_at ? \Illuminate\Support\Carbon::parse($event->event_at)->format('d M Y, H:i:s') : '—' }}</td><td>{{ $event->operator_name ?: 'Unknown operator' }}<div class="sub">DB ID · {{ $event->operator_db_id ?: '—' }}</div></td><td>{{ $event->fingerprint_slot ?? '—' }}</td><td><span class="status {{ $event->result === 'granted' ? '' : 'denied' }}">{{ $event->result }}</span></td><td>{{ $event->reason ?: '—' }}</td></tr>
 @empty
 <tr><td colspan="5" class="empty">No access events recorded for this device.</td></tr>
 @endforelse

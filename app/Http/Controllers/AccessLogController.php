@@ -18,11 +18,12 @@ class AccessLogController extends Controller
         ]);
 
         $query = AccessLog::query()
-            ->leftJoin('operators', 'access_logs.operator_id', '=', 'operators.operator_id')
+            ->leftJoin('operators', 'access_logs.operator_db_id', '=', 'operators.operator_db_id')
             ->leftJoin('devices', 'access_logs.device_id', '=', 'devices.device_id')
             ->select([
                 'access_logs.*',
                 'operators.operator_name as directory_operator_name',
+                'operators.device_operator_id',
                 'devices.device_name',
             ]);
 
@@ -31,7 +32,8 @@ class AccessLogController extends Controller
             $query->where(function ($builder) use ($search) {
                 $builder->where('access_logs.operator_name', 'like', '%' . $search . '%')
                     ->orWhere('operators.operator_name', 'like', '%' . $search . '%')
-                    ->orWhere('access_logs.operator_id', 'like', '%' . $search . '%')
+                    ->orWhere('access_logs.operator_db_id', 'like', '%' . $search . '%')
+                    ->orWhere('operators.device_operator_id', 'like', '%' . $search . '%')
                     ->orWhere('access_logs.device_id', 'like', '%' . $search . '%')
                     ->orWhere('devices.device_name', 'like', '%' . $search . '%')
                     ->orWhere('access_logs.event_id', 'like', '%' . $search . '%')
@@ -72,11 +74,12 @@ class AccessLogController extends Controller
     public function show(int $logId): View
     {
         $log = AccessLog::query()
-            ->leftJoin('operators', 'access_logs.operator_id', '=', 'operators.operator_id')
+            ->leftJoin('operators', 'access_logs.operator_db_id', '=', 'operators.operator_db_id')
             ->leftJoin('devices', 'access_logs.device_id', '=', 'devices.device_id')
             ->select([
                 'access_logs.*',
                 'operators.operator_name as directory_operator_name',
+                'operators.device_operator_id',
                 'devices.device_name',
             ])
             ->where('access_logs.id', $logId)

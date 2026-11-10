@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccessLog;
+use App\Models\AccessSession;
 use App\Models\Operator;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -19,7 +20,8 @@ class OperatorController extends Controller
         $query = Operator::query()
             ->leftJoin('devices', 'operators.device_id', '=', 'devices.device_id')
             ->select([
-                'operators.operator_id',
+                'operators.operator_db_id',
+                'operators.device_operator_id',
                 'operators.device_id',
                 'operators.operator_name',
                 'operators.fingerprint_slot',
@@ -31,7 +33,8 @@ class OperatorController extends Controller
         if (!empty($filters['q'])) {
             $search = trim($filters['q']);
             $query->where(function ($builder) use ($search) {
-                $builder->where('operators.operator_id', 'like', '%' . $search . '%')
+                $builder->where('operators.operator_db_id', 'like', '%' . $search . '%')
+                    ->orWhere('operators.device_operator_id', 'like', '%' . $search . '%')
                     ->orWhere('operators.operator_name', 'like', '%' . $search . '%')
                     ->orWhere('operators.device_id', 'like', '%' . $search . '%')
                     ->orWhere('devices.device_name', 'like', '%' . $search . '%')
@@ -44,8 +47,9 @@ class OperatorController extends Controller
         }
 
         $operators = $query
+            ->orderByRaw("CASE WHEN operators.status = 'active' THEN 0 ELSE 1 END")
             ->orderBy('operators.operator_name')
-            ->orderBy('operators.operator_id')
+            ->orderBy('operators.operator_db_id')
             ->paginate(15)
             ->withQueryString();
 
@@ -58,12 +62,13 @@ class OperatorController extends Controller
         ));
     }
 
-    public function show(string $operatorId): View
+    public function show(int $operatorDbId): View
     {
         $operator = Operator::query()
             ->leftJoin('devices', 'operators.device_id', '=', 'devices.device_id')
             ->select([
-                'operators.operator_id',
+                'operators.operator_db_id',
+                'operators.device_operator_id',
                 'operators.device_id',
                 'operators.operator_name',
                 'operators.fingerprint_slot',
@@ -72,27 +77,41 @@ class OperatorController extends Controller
                 'operators.updated_at',
                 'devices.device_name',
             ])
-            ->where('operators.operator_id', $operatorId)
+            ->where('operators.operator_db_id', $operatorDbId)
             ->firstOrFail();
 
-        $totalEvents = AccessLog::query()->where('operator_id', $operator->operator_id)->count();
-        $grantedEvents = AccessLog::query()
-            ->where('operator_id', $operator->operator_id)
-            ->where('result', 'granted')
-            ->count();
-        $deniedEvents = AccessLog::query()
-            ->where('operator_id', $operator->operator_id)
-            ->where('result', 'denied')
-            ->count();
+        $events = AccessLog::query()
+            ->where('operator_db_id', $operator->operator_db_id);
 
-        $recentEvents = AccessLog::query()
-            ->where('operator_id', $operator->operator_id)
+        $totalEvents = (clone $events)->count();
+        $grantedEvents = (clone $events)->where('result', 'granted')->count();
+        $deniedEvents = (clone $events)->where('result', 'denied')->count();
+
+        $recentEvents = (clone $events)
             ->orderByDesc('event_at')
+            ->orderByDesc('id')
             ->limit(20)
             ->get();
 
+        $sessions = AccessSession::query()
+            ->where('operator_db_id', $operator->operator_db_id);
+
+        $totalSessions = (clone $sessions)->count();
+        $activeSessions = (clone $sessions)->where('status', 'active')->count();
+        $recentSessions = (clone $sessions)
+            ->orderByDesc('started_at')
+            ->limit(10)
+            ->get();
+
         return view('operators.show', compact(
-            'operator', 'totalEvents', 'grantedEvents', 'deniedEvents', 'recentEvents'
+            'operator',
+            'totalEvents',
+            'grantedEvents',
+            'deniedEvents',
+            'recentEvents',
+            'totalSessions',
+            'activeSessions',
+            'recentSessions'
         ));
     }
 }

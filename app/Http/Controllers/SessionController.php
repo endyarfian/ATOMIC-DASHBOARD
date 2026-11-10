@@ -3,48 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccessSession;
+use App\Services\SessionInterruptionDetector;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SessionController extends Controller
 {
-    public function index(Request $request): View
+    private function orphanedSessionIds(): array
     {
-        // Snapshot stale sessions into the dashboard database. The source database
-        // (atomic_access) is only queried and is never modified.
-        $interruptedIds = app(\App\Services\SessionInterruptionDetector::class)->detect();
+        return AccessSession::query()
+            ->leftJoin('operators', 'access_sessions.operator_db_id', '=', 'operators.operator_db_id')
+            ->where('access_sessions.status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('operators.operator_db_id')
+                    ->orWhere('operators.status', '!=', 'active');
+            })
+            ->pluck('access_sessions.session_id')
+            ->map(static fn ($id) => (string) $id)
+            ->all();
+    }
 
-        $filters = $request->validate([
-            'q' => ['nullable', 'string', 'max:100'],
-            'status' => ['nullable', 'in:active,interrupted,completed'],
-            'start_date' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-        ]);
-
-        $query = AccessSession::query()
-            ->leftJoin('operators', 'access_sessions.operator_id', '=', 'operators.operator_id')
+    private function baseQuery(): Builder
+    {
+        return AccessSession::query()
+            ->leftJoin('operators', 'access_sessions.operator_db_id', '=', 'operators.operator_db_id')
             ->leftJoin('devices', 'access_sessions.device_id', '=', 'devices.device_id')
             ->select([
                 'access_sessions.*',
                 'operators.operator_name',
+                'operators.device_operator_id',
+                'operators.status as operator_status',
                 'devices.device_name',
             ]);
+    }
+
+    private function applyDisplayStatus($sessions, array $interruptedIds, array $orphanedIds): void
+    {
+        $interruptedLookup = array_fill_keys($interruptedIds, true);
+        $orphanedLookup = array_fill_keys($orphanedIds, true);
+
+        $sessions->getCollection()->transform(function ($session) use ($interruptedLookup, $orphanedLookup) {
+            $id = (string) $session->session_id;
+
+            if ($session->status === 'completed') {
+                $session->display_status = 'completed';
+            } elseif (isset($orphanedLookup[$id])) {
+                $session->display_status = 'orphaned';
+            } elseif (isset($interruptedLookup[$id])) {
+                $session->display_status = 'interrupted';
+            } else {
+                $session->display_status = $session->status;
+            }
+
+            return $session;
+        });
+    }
+
+    public function index(Request $request): View
+    {
+        $interruptedIds = app(SessionInterruptionDetector::class)->detect();
+        $orphanedIds = $this->orphanedSessionIds();
+
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'in:active,orphaned,interrupted,completed'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+        ]);
+
+        $query = $this->baseQuery();
 
         if (!empty($filters['q'])) {
             $search = trim($filters['q']);
             $query->where(function ($builder) use ($search) {
                 $builder->where('access_sessions.session_id', 'like', '%' . $search . '%')
-                    ->orWhere('access_sessions.operator_id', 'like', '%' . $search . '%')
+                    ->orWhere('access_sessions.operator_db_id', 'like', '%' . $search . '%')
+                    ->orWhere('operators.device_operator_id', 'like', '%' . $search . '%')
                     ->orWhere('operators.operator_name', 'like', '%' . $search . '%')
                     ->orWhere('access_sessions.device_id', 'like', '%' . $search . '%')
                     ->orWhere('devices.device_name', 'like', '%' . $search . '%');
             });
         }
 
-        if (($filters['status'] ?? null) === 'interrupted') {
-            $query->whereIn('access_sessions.session_id', $interruptedIds);
+        if (($filters['status'] ?? null) === 'orphaned') {
+            $query->whereIn('access_sessions.session_id', $orphanedIds);
+        } elseif (($filters['status'] ?? null) === 'interrupted') {
+            $query->whereIn('access_sessions.session_id', $interruptedIds)
+                ->whereNotIn('access_sessions.session_id', $orphanedIds)
+                ->where('access_sessions.status', '!=', 'completed');
         } elseif (($filters['status'] ?? null) === 'active') {
             $query->where('access_sessions.status', 'active')
+                ->where('operators.status', 'active')
                 ->whereNotIn('access_sessions.session_id', $interruptedIds);
         } elseif (($filters['status'] ?? null) === 'completed') {
             $query->where('access_sessions.status', 'completed');
@@ -64,21 +114,20 @@ class SessionController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $interruptedLookup = array_fill_keys($interruptedIds, true);
-        $sessions->getCollection()->transform(function ($session) use ($interruptedLookup) {
-            $session->display_status = isset($interruptedLookup[$session->session_id])
-                ? 'interrupted'
-                : $session->status;
-
-            return $session;
-        });
+        $this->applyDisplayStatus($sessions, $interruptedIds, $orphanedIds);
 
         $totalSessions = AccessSession::query()->count();
-        $activeSessions = AccessSession::query()
-            ->where('status', 'active')
-            ->whereNotIn('session_id', $interruptedIds)
-            ->count();
-        $interruptedSessions = count($interruptedIds);
+        $activeSessions = $this->baseQuery()
+            ->where('access_sessions.status', 'active')
+            ->where('operators.status', 'active')
+            ->whereNotIn('access_sessions.session_id', $interruptedIds)
+            ->count('access_sessions.session_id');
+        $orphanedSessions = count($orphanedIds);
+        $interruptedSessions = $this->baseQuery()
+            ->whereIn('access_sessions.session_id', $interruptedIds)
+            ->whereNotIn('access_sessions.session_id', $orphanedIds)
+            ->where('access_sessions.status', '!=', 'completed')
+            ->count('access_sessions.session_id');
         $completedSessions = AccessSession::query()
             ->where('status', 'completed')
             ->count();
@@ -88,6 +137,7 @@ class SessionController extends Controller
             'filters',
             'totalSessions',
             'activeSessions',
+            'orphanedSessions',
             'interruptedSessions',
             'completedSessions'
         ));
@@ -95,24 +145,24 @@ class SessionController extends Controller
 
     public function show(string $sessionId): View
     {
-        $interruptedIds = app(\App\Services\SessionInterruptionDetector::class)->detect();
+        $interruptedIds = app(SessionInterruptionDetector::class)->detect();
+        $orphanedIds = $this->orphanedSessionIds();
 
-        $session = AccessSession::query()
-            ->leftJoin('operators', 'access_sessions.operator_id', '=', 'operators.operator_id')
-            ->leftJoin('devices', 'access_sessions.device_id', '=', 'devices.device_id')
-            ->select([
-                'access_sessions.*',
-                'operators.operator_name',
-                'devices.device_name',
-            ])
+        $session = $this->baseQuery()
             ->where('access_sessions.session_id', $sessionId)
             ->firstOrFail();
 
-        $session->display_status = in_array($session->session_id, $interruptedIds, true)
-            ? 'interrupted'
-            : $session->status;
+        $id = (string) $session->session_id;
+        if ($session->status === 'completed') {
+            $session->display_status = 'completed';
+        } elseif (in_array($id, $orphanedIds, true)) {
+            $session->display_status = 'orphaned';
+        } elseif (in_array($id, $interruptedIds, true)) {
+            $session->display_status = 'interrupted';
+        } else {
+            $session->display_status = $session->status;
+        }
 
         return view('sessions.show', compact('session'));
     }
-
 }
