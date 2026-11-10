@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#080d16">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>MQTT Monitor | A.T.O.M.</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#080d16;color:#e8eef7;--line:#223044;--muted:#8392a8;--muted2:#607087;--lime:#b7f36b;--cyan:#62d9e8;--red:#ff7188;--amber:#f4c76b}
+*{box-sizing:border-box}body{margin:0;min-width:320px;background:radial-gradient(ellipse at 78% -15%,rgba(46,105,130,.2),transparent 38%),#080d16}a{color:inherit;text-decoration:none}
+.app{min-height:100vh;display:grid;grid-template-columns:252px minmax(0,1fr)}.sidebar{position:sticky;top:0;height:100vh;padding:26px 17px 18px;display:flex;flex-direction:column;background:rgba(10,17,28,.96);border-right:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;padding:0 9px 30px}.brand-mark{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#d1ff8b,#86c94b);color:#101a20;font-size:20px;font-weight:950}.brand-name{font-size:15px;font-weight:850;letter-spacing:.17em}.brand-caption{margin-top:4px;color:var(--muted2);font-size:9px;letter-spacing:.19em}
+.side-label{padding:15px 11px 9px;color:#53647a;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.nav-link{min-height:43px;display:flex;align-items:center;gap:12px;margin:3px 0;padding:0 12px;border-radius:10px;color:#91a0b5;font-size:12px}.nav-link.active{color:var(--lime);background:rgba(183,243,107,.1);border:1px solid rgba(183,243,107,.12)}.nav-icon{width:19px;text-align:center;font-size:15px}.spacer{flex:1}.source{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0d1724;color:var(--muted);font-size:9px}.source strong{display:block;color:var(--lime);margin:8px 0}
+.main{min-width:0;padding:30px clamp(18px,3.4vw,48px) 34px}.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:24px;border-bottom:1px solid var(--line)}.eyebrow{color:var(--cyan);font-size:9px;font-weight:850;letter-spacing:.2em;text-transform:uppercase}h1{margin:8px 0 5px;font-size:clamp(25px,3vw,34px);letter-spacing:-.055em}.subtitle{color:var(--muted);font-size:11px}.live{padding:9px 13px;border:1px solid rgba(98,217,232,.22);border-radius:8px;background:rgba(98,217,232,.07);color:var(--cyan);font-size:9px;font-weight:850;letter-spacing:.13em}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:26px 0 13px}.section-head h2{margin:0;font-size:12px}.hint{color:var(--muted2);font-size:9px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{min-width:0;padding:17px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,rgba(20,33,49,.98),rgba(13,22,35,.98))}.stat-label{color:#9baabd;font-size:10px}.stat-value{margin-top:12px;color:#f4f7fb;font-size:29px;font-weight:800;letter-spacing:-.055em}.green{color:var(--lime)}.red{color:var(--red)}.cyan{color:var(--cyan)}.amber{color:var(--amber)}
+.panel{min-width:0;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,rgba(16,26,40,.98),rgba(12,20,32,.98));overflow:hidden}.filters{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:16px;border-bottom:1px solid var(--line)}.field{min-height:39px;max-width:100%;padding:0 12px;border:1px solid #2a3b50;border-radius:8px;background:#0b1522;color:#e8eef7;font-size:10px}.search{width:min(290px,100%)}.btn{min-height:39px;display:inline-flex;align-items:center;justify-content:center;padding:0 14px;border:1px solid rgba(183,243,107,.25);border-radius:8px;background:rgba(183,243,107,.1);color:var(--lime);font-size:10px;font-weight:800;cursor:pointer}.btn.secondary{border-color:#2a3b50;background:#142033;color:#aab8ca}
+.table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{padding:13px 12px;border-bottom:1px solid #2a394d;color:#718198;font-size:8px;font-weight:800;letter-spacing:.12em;text-align:left;text-transform:uppercase}td{padding:13px 12px;border-bottom:1px solid rgba(34,48,68,.68);color:#c8d3e1;font-size:9px;vertical-align:top}tbody tr:last-child td{border-bottom:0}.topic{max-width:330px;overflow:hidden;color:#e5edf7;font-weight:750;text-overflow:ellipsis}.sub{margin-top:4px;color:var(--muted2);font-size:8px}.status{display:inline-block;padding:5px 8px;border:1px solid rgba(183,243,107,.18);border-radius:6px;background:rgba(183,243,107,.08);color:var(--lime);font-size:8px;font-weight:850;text-transform:uppercase}.status.failed{border-color:rgba(255,113,136,.2);background:rgba(255,113,136,.08);color:var(--red)}.status.pending{border-color:rgba(244,199,107,.24);background:rgba(244,199,107,.09);color:var(--amber)}
+details{min-width:240px;max-width:440px}summary{color:var(--cyan);font-size:9px;font-weight:750;cursor:pointer}pre{max-width:440px;max-height:260px;overflow:auto;margin:9px 0 0;padding:11px;border:1px solid #26364a;border-radius:8px;background:#09121e;color:#c7d5e5;font:9px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.error{margin-top:8px;padding:9px;border:1px solid rgba(255,113,136,.2);border-radius:7px;background:rgba(255,113,136,.06);color:#ff9aaa;font-size:9px;white-space:normal;overflow-wrap:anywhere}.empty{padding:28px;color:var(--muted2);text-align:center;font-size:11px}.pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:9px}.pagination a{padding:8px 11px;border:1px solid #2a3b50;border-radius:7px;color:#dce5f1}.pagination a.disabled{opacity:.35;pointer-events:none}footer{display:flex;justify-content:space-between;gap:12px;margin-top:22px;padding-top:14px;border-top:1px solid rgba(34,48,68,.7);color:#596a80;font-size:8px}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:820px){.app{grid-template-columns:66px minmax(0,1fr)}.sidebar{padding:20px 8px 14px}.brand{justify-content:center;padding:0 0 25px}.brand-copy,.side-label,.nav-text,.source{display:none}.nav-link{justify-content:center;padding:0}.main{padding:24px 17px}}@media(max-width:600px){.main{padding:20px 12px 25px}.topbar{flex-direction:column}.search{width:100%}.filters{align-items:stretch}.filters .field,.filters .btn{flex:1}footer{flex-direction:column}}@media(max-width:360px){.app{grid-template-columns:54px minmax(0,1fr)}.main{padding-left:9px;padding-right:9px}}
+</style></head>
+<body><div class="app">
+<aside class="sidebar"><div class="brand"><div class="brand-mark">A.</div><div class="brand-copy"><div class="brand-name">A.T.O.M.</div><div class="brand-caption">BIOMETRIC ACCESS</div></div></div><div class="side-label">Workspace</div>
+<a class="nav-link" href="{{ route('dashboard') }}"><span class="nav-icon">▦</span><span class="nav-text">Overview</span></a>
+<a class="nav-link" href="{{ route('devices.index') }}"><span class="nav-icon">▣</span><span class="nav-text">Devices</span></a>
+<a class="nav-link" href="{{ route('operators.index') }}"><span class="nav-icon">♙</span><span class="nav-text">Operators</span></a>
+<a class="nav-link" href="{{ route('access-logs.index') }}"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span></a>
+<a class="nav-link" href="{{ route('sessions.index') }}"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span></a>
+<a class="nav-link active" href="{{ route('mqtt-monitor.index') }}" aria-current="page"><span class="nav-icon">⌁</span><span class="nav-text">MQTT monitor</span></a>
+<div class="spacer"></div><div class="source">DATA SOURCE<strong>● Read-only connected</strong>atomic_access.mqtt_messages<br>Monitoring only · no write access</div></aside>
+<main class="main">
+<header class="topbar"><div><div class="eyebrow">Biometric access intelligence / message transport</div><h1>MQTT Monitor</h1><div class="subtitle">Broker message history, subscriber processing status, and payload diagnostics.</div></div><div class="live">● MESSAGE MONITOR</div></header>
+<div class="section-head"><h2>Message processing</h2><span class="hint">Source · atomic_access.mqtt_messages</span></div>
+<section class="stats">
+<article class="stat"><div class="stat-label">Matching messages</div><div class="stat-value">{{ number_format($totalMessages) }}</div></article>
+<article class="stat"><div class="stat-label">Processed</div><div class="stat-value green">{{ number_format($processedMessages) }}</div></article>
+<article class="stat"><div class="stat-label">Pending</div><div class="stat-value amber">{{ number_format($pendingMessages) }}</div></article>
+<article class="stat"><div class="stat-label">Failed</div><div class="stat-value red">{{ number_format($failedMessages) }}</div></article>
+</section>
+<div class="section-head"><h2>MQTT message stream</h2><span class="hint">{{ $messages->total() }} records · newest first · refresh every 15s</span></div>
+<section class="panel">
+<form class="filters" method="GET" action="{{ route('mqtt-monitor.index') }}">
+<input class="field search" type="search" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Search device, topic, message ID...">
+<select class="field" name="device_id"><option value="">All devices</option>@foreach($devices as $device)<option value="{{ $device }}" @selected(($filters['device_id'] ?? '') === $device)>{{ $device }}</option>@endforeach</select>
+<select class="field" name="topic"><option value="">All topics</option>@foreach($topics as $topic)<option value="{{ $topic }}" @selected(($filters['topic'] ?? '') === $topic)>{{ $topic }}</option>@endforeach</select>
+<select class="field" name="status"><option value="">All statuses</option><option value="processed" @selected(($filters['status'] ?? '') === 'processed')>Processed</option><option value="pending" @selected(($filters['status'] ?? '') === 'pending')>Pending</option><option value="failed" @selected(($filters['status'] ?? '') === 'failed')>Failed</option></select>
+<button class="btn" type="submit">Apply filters</button><a class="btn secondary" href="{{ route('mqtt-monitor.index') }}">Reset</a>
+</form>
+<div class="table-wrap"><table><thead><tr><th>Message</th><th>Received at (WIB)</th><th>Device</th><th>Topic</th><th>Processing</th><th>Payload / error</th></tr></thead><tbody>
+@forelse($messages as $message)
+<tr>
+<td><div class="topic">#{{ $message->id }}</div><div class="sub">MQTT message ID</div></td>
+<td>{{ $message->received_at_wib }}</td>
+<td>{{ $message->device_id ?: '—' }}</td>
+<td><div class="topic">{{ $message->topic }}</div></td>
+<td><span class="status {{ $message->processing_status === 'failed' ? 'failed' : ($message->processing_status === 'pending' ? 'pending' : '') }}">{{ $message->processing_status ?: 'unknown' }}</span></td>
+<td><details><summary>Inspect payload</summary><pre>{{ $message->payload_pretty }}</pre>@if($message->error_message)<div class="error"><strong>Processing error</strong><br>{{ $message->error_message }}</div>@endif</details></td>
+</tr>
+@empty<tr><td colspan="6" class="empty">No MQTT messages match the selected filters.</td></tr>@endforelse
+</tbody></table></div>
+<div class="pagination"><span>Page {{ $messages->currentPage() }} of {{ max(1, $messages->lastPage()) }}</span><div style="display:flex;gap:8px"><a class="{{ $messages->onFirstPage() ? 'disabled' : '' }}" href="{{ $messages->previousPageUrl() ?: '#' }}">← Previous</a><a class="{{ $messages->hasMorePages() ? '' : 'disabled' }}" href="{{ $messages->nextPageUrl() ?: '#' }}">Next →</a></div></div>
+</section>
+<footer><span>A.T.O.M. · Biometric Access Management</span><span>Read-only monitoring · Asia/Jakarta</span></footer>
+</main></div>
+<script>window.setInterval(() => { if (!document.hidden) window.location.reload(); }, 15000);</script>
+</body></html>
