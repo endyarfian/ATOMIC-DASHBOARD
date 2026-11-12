@@ -63,7 +63,7 @@
         .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
         .metric { position: relative; min-height: 126px; overflow: hidden; padding: 16px 17px; border: 1px solid var(--line); border-radius: 13px; background: linear-gradient(145deg, rgba(20, 33, 49, .98), rgba(13, 22, 35, .98)); }
         .metric:after { position: absolute; right: -28px; bottom: -52px; width: 110px; height: 110px; border: 1px solid rgba(98, 217, 232, .08); border-radius: 50%; content: ""; }
-        .metric-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #9baabd; font-size: 10px; font-weight: 650; }
+        .metric-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 0px; color: #9baabd; font-size: 10px; font-weight: 650; }
         .metric-icon { width: 29px; height: 29px; display: grid; place-items: center; border: 1px solid #2b3b50; border-radius: 9px; background: #172538; color: var(--cyan); font-size: 13px; }
         .metric-icon svg { display: block; width: 16px; height: 16px; flex: none; stroke: currentColor; stroke-width: 1.8; }
         .metric-number { margin-top: 13px; color: #f4f7fb; font-size: 29px; font-weight: 800; line-height: 1; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
