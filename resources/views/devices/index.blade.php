@@ -54,7 +54,7 @@
 </form>
 <div class="table-wrap"><table><thead><tr><th>Device</th><th>Status</th><th>Firmware</th><th>Last seen (WIB)</th><th>Registered</th><th>Action</th></tr></thead><tbody>
 @forelse($devices as $device)
-<tr><td><div class="device-name">{{ $device->device_name ?: 'Unnamed device' }}</div><div class="device-id">{{ $device->device_id }}</div></td><td><span class="status {{ $device->status === 'online' ? '' : 'offline' }}">{{ $device->status ?: 'unknown' }}</span></td><td>{{ $device->firmware_version ?: '—' }}</td><td>{{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') : 'Never' }}</td><td>{{ $device->created_at ? \Illuminate\Support\Carbon::parse($device->created_at)->format('d M Y') : '—' }}</td><td><a class="detail-link" href="{{ route('devices.show', $device->device_id) }}">View details →</a></td></tr>
+<tr><td><div class="device-name">{{ $device->device_name ?: 'Unnamed device' }}</div><div class="device-id">{{ $device->device_id }}</div></td><td><span class="status {{ $device->status === 'online' ? '' : 'offline' }}">{{ $device->status ?: 'unknown' }}</span></td><td>{{ $device->firmware_version ?: '—' }}</td><td>{{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen, 'UTC')->setTimezone('Asia/Jakarta')->format('d M Y, H:i:s') . ' WIB' : 'Never' }}</td><td>{{ $device->created_at ? \Illuminate\Support\Carbon::parse($device->created_at)->format('d M Y') : '—' }}</td><td><a class="detail-link" href="{{ route('devices.show', $device->device_id) }}">View details →</a></td></tr>
 @empty
 <tr><td colspan="6" class="empty">No devices match the selected filters.</td></tr>
 @endforelse
