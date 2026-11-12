@@ -61,7 +61,7 @@ details{min-width:240px;max-width:440px}summary{color:var(--cyan);font-size:9px;
 </tbody></table></div>
 <div class="pagination"><span>Page {{ $messages->currentPage() }} of {{ max(1, $messages->lastPage()) }}</span><div style="display:flex;gap:8px"><a class="{{ $messages->onFirstPage() ? 'disabled' : '' }}" href="{{ $messages->previousPageUrl() ?: '#' }}">← Previous</a><a class="{{ $messages->hasMorePages() ? '' : 'disabled' }}" href="{{ $messages->nextPageUrl() ?: '#' }}">Next →</a></div></div>
 </section>
-<footer><span>A.T.O.M. · Access Tracking and Operational Monitoring</span><span>Read-only monitoring · Asia/Jakarta</span></footer>
+<footer><span>A.T.O.M. · Access Tracking and Operational Monitoring. © {{ now()->year }} ENLISTERS TECHNOLOGIES</span><span>Read-only monitoring · Asia/Jakarta</span></footer>
 </main></div>
 <script>window.setInterval(() => { if (!document.hidden) window.location.reload(); }, 15000);</script>
 </body></html>

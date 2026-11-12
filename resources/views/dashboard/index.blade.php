@@ -65,6 +65,7 @@
         .metric:after { position: absolute; right: -28px; bottom: -52px; width: 110px; height: 110px; border: 1px solid rgba(98, 217, 232, .08); border-radius: 50%; content: ""; }
         .metric-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #9baabd; font-size: 10px; font-weight: 650; }
         .metric-icon { width: 29px; height: 29px; display: grid; place-items: center; border: 1px solid #2b3b50; border-radius: 9px; background: #172538; color: var(--cyan); font-size: 13px; }
+        .metric-icon svg { display: block; width: 16px; height: 16px; flex: none; stroke: currentColor; stroke-width: 1.8; }
         .metric-number { margin-top: 13px; color: #f4f7fb; font-size: 29px; font-weight: 800; line-height: 1; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
         .metric-number.lime { color: var(--lime); }
         .metric-number.red { color: var(--red); }
@@ -176,32 +177,32 @@
         </div>
         <section class="metrics">
             <article class="metric">
-                <div class="metric-head">Registered devices <span class="metric-icon">▣</span></div>
+                <div class="metric-head">Registered devices <span class="metric-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg></span></div>
                 <div class="metric-number">{{ number_format($devices->count()) }}</div>
                 <div class="metric-foot"><span class="good">{{ number_format($onlineDevices) }} online</span> · <span class="bad">{{ number_format($offlineDevices) }} offline</span></div>
             </article>
             <article class="metric">
-                <div class="metric-head">Active operators <span class="metric-icon">♙</span></div>
+                <div class="metric-head">Active operators <span class="metric-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span></div>
                 <div class="metric-number">{{ number_format($activeOperators) }}</div>
                 <div class="metric-foot">{{ number_format($totalOperators) }} registered operators</div>
             </article>
             <article class="metric">
-                <div class="metric-head">Access granted <span class="metric-icon">✓</span></div>
+                <div class="metric-head">Access granted <span class="metric-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span></div>
                 <div class="metric-number lime">{{ number_format($grantedLogs) }}</div>
                 <div class="metric-foot">{{ number_format($totalLogs) }} total access events</div>
             </article>
             <article class="metric">
-                <div class="metric-head">Access denied <span class="metric-icon">×</span></div>
+                <div class="metric-head">Access denied <span class="metric-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span></div>
                 <div class="metric-number red">{{ number_format($deniedLogs) }}</div>
                 <div class="metric-foot">Rejected fingerprint attempts</div>
             </article>
             <article class="metric">
-                <div class="metric-head">Today's access <span class="metric-icon">◷</span></div>
+                <div class="metric-head">Today's access <span class="metric-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg></span></div>
                 <div class="metric-number">{{ number_format($todayLogs) }}</div>
                 <div class="metric-foot"><span class="good">{{ number_format($todayGranted) }} granted</span> · <span class="bad">{{ number_format($todayDenied) }} denied</span></div>
             </article>
             <article class="metric">
-                <div class="metric-head">MQTT processed <span class="metric-icon">⌁</span></div>
+                <div class="metric-head">MQTT processed <span class="metric-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6.01 18H6"/><path d="M10.01 18H10"/><path d="M15 10v4"/><path d="M17.84 7.17a4 4 0 0 0-5.66 0"/><path d="M20.66 4.34a8 8 0 0 0-11.31 0"/></svg></span></div>
                 <div class="metric-number cyan">{{ number_format($processedMessages) }}</div>
                 <div class="metric-foot">{{ number_format($totalMessages) }} total messages received</div>
             </article>
@@ -351,7 +352,7 @@
         </section>
 
         <footer>
-            <span>A.T.O.M. · Access Tracking and Operational Monitoring</span>
+            <span>A.T.O.M. · Access Tracking and Operational Monitoring. © {{ now()->year }} ENLISTERS TECHNOLOGIES</span>
             <span>Source: atomic_access · Read-only monitoring · Asia/Jakarta</span>
         </footer>
     </main>
