@@ -253,7 +253,7 @@
                             <div class="device-main">
                                 <div class="device-name"><a href="{{ route('devices.show', $device->device_id) }}" style="text-decoration:none;color:inherit">{{ $device->device_name }}</a></div>
                                 <div class="device-detail">{{ $device->device_id }} · FW {{ $device->firmware_version ?? '—' }}</div>
-                                <div class="device-detail">Last seen: {{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') : 'Never' }}</div>
+                                <div class="device-detail">Last seen: {{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen, 'UTC')->setTimezone('Asia/Jakarta')->format('d M Y, H:i:s') . ' WIB' : 'Never' }}</div>
                             </div>
                             <span class="device-status {{ $device->status === 'online' ? '' : 'offline' }}">{{ $device->status }}</span>
                         </div>
