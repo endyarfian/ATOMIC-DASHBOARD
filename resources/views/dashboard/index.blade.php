@@ -127,25 +127,28 @@
         @media (max-width: 820px) { .app { grid-template-columns: 66px minmax(0, 1fr); } .sidebar { padding: 20px 8px 14px; } .brand { justify-content: center; padding: 0 0 25px; } .brand-copy, .side-label, .nav-text, .soon-tag, .source-box { display: none; } .nav-link, .nav-soon { justify-content: center; padding: 0; } .nav-icon { font-size: 17px; } .main { padding: 24px 17px; } }
         @media (max-width: 600px) { .main { padding: 20px 12px 25px; } .topbar { flex-direction: column; gap: 13px; } .top-meta { align-items: flex-start; flex-direction: row; flex-wrap: wrap; } .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .metric { min-height: 116px; padding: 12px; } .metric-number { font-size: 25px; } .metric-head { font-size: 9px; } .metric-icon { width: 25px; height: 25px; } .panel { padding: 13px; } .section-heading { margin-top: 21px; } .chart { gap: 5px; } .legend { gap: 8px; } footer { flex-direction: column; } }
         @media (max-width: 360px) { .app { grid-template-columns: 54px minmax(0, 1fr); } .sidebar { padding-left: 5px; padding-right: 5px; } .main { padding-left: 9px; padding-right: 9px; } .metric-number { font-size: 22px; } .metric { padding: 10px; } }
-    </style>
+    .brand-mark svg{display:block;width:24px;height:24px;stroke:currentColor;stroke-width:1.8}
+.nav-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 19px;width:19px;height:19px}
+.nav-icon svg{display:block;width:17px;height:17px;stroke:currentColor;stroke-width:1.9;flex:none}
+</style>
 </head>
 <body>
 <div class="app">
     <aside class="sidebar">
         <div class="brand">
-            <div class="brand-mark">A.</div>
+            <div class="brand-mark" aria-label="A.T.O.M."><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg></div>
             <div class="brand-copy">
                 <div class="brand-name">A.T.O.M.</div>
                 <div class="brand-caption">BIOMETRIC ACCESS</div>
             </div>
         </div>
         <div class="side-label">Workspace</div>
-        <a class="nav-link active" href="/" aria-current="page"><span class="nav-icon">▦</span><span class="nav-text">Overview</span></a>
-        <a class="nav-link" href="{{ route('devices.index') }}"><span class="nav-icon">▣</span><span class="nav-text">Devices</span></a>
-        <a class="nav-link" href="{{ route('operators.index') }}"><span class="nav-icon">♙</span><span class="nav-text">Operators</span></a>
-        <a class="nav-link" href="{{ route('access-logs.index') }}"><span class="nav-icon">≡</span><span class="nav-text">Access logs</span></a>
-        <a class="nav-link" href="{{ route('sessions.index') }}"><span class="nav-icon">◷</span><span class="nav-text">Sessions</span></a>
-        <a class="nav-link" href="{{ route('mqtt-monitor.index') }}"><span class="nav-icon">⌁</span><span class="nav-text">MQTT monitor</span></a>
+        <a class="nav-link active" href="/" aria-current="page"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17.5" cy="17.5" r="3.5"/><circle cx="17.5" cy="6.5" r="3.5"/><circle cx="6.5" cy="17.5" r="3.5"/><circle cx="6.5" cy="6.5" r="3.5"/></svg></span><span class="nav-text">Overview</span></a>
+        <a class="nav-link" href="{{ route('devices.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg></span><span class="nav-text">Devices</span></a>
+        <a class="nav-link" href="{{ route('operators.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span><span class="nav-text">Operators</span></a>
+        <a class="nav-link" href="{{ route('access-logs.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg></span><span class="nav-text">Access logs</span></a>
+        <a class="nav-link" href="{{ route('sessions.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></span><span class="nav-text">Sessions</span></a>
+        <a class="nav-link" href="{{ route('mqtt-monitor.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6.01 18H6"/><path d="M10.01 18H10"/><path d="M15 10v4"/><path d="M17.84 7.17a4 4 0 0 0-5.66 0"/><path d="M20.66 4.34a8 8 0 0 0-11.31 0"/></svg></span><span class="nav-text">MQTT monitor</span></a>
         <div class="side-spacer"></div>
         <div class="source-box">
             <div class="source-title">DATA SOURCE</div>
@@ -157,7 +160,7 @@
     <main class="main">
         <header class="topbar">
             <div>
-                <div class="eyebrow">Biometric access intelligence</div>
+                <div class="eyebrow">Access Tracking and Operational Monitoring</div>
                 <h1>System Overview</h1>
                 <div class="subtitle">Operational command center · {{ now()->translatedFormat('l, d F Y') }}</div>
             </div>
@@ -348,7 +351,7 @@
         </section>
 
         <footer>
-            <span>A.T.O.M. · Biometric Access Management</span>
+            <span>A.T.O.M. · Access Tracking and Operational Monitoring</span>
             <span>Source: atomic_access · Read-only monitoring · Asia/Jakarta</span>
         </footer>
     </main>
