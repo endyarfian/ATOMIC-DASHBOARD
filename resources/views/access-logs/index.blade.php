@@ -10,7 +10,7 @@
 .topbar h1{margin:8px 0 5px;color:#f3f7fc;font-size:clamp(25px,3vw,34px);line-height:1.1;letter-spacing:-.055em}
 .topbar .subtitle{color:var(--muted);font-size:11px}
 .live-badge{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(183,243,107,.24);border-radius:8px;background:rgba(183,243,107,.08);color:var(--lime);font-size:9px;font-weight:850;letter-spacing:.13em;white-space:nowrap}
-.live-badge .state-dot{width:6px;height:6px;flex:0 0 6px}
+.live-badge .state-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#b7f36b;box-shadow:0 0 10px rgba(183,243,107,.65)}
 .topbar-back{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:9px 13px;border:1px solid #2a3b50;border-radius:8px;background:rgba(20,32,51,.55);color:#cbd7e6;font-size:10px;font-weight:700;white-space:nowrap;text-decoration:none}
 .source-box{padding:14px;border:1px solid #223044;border-radius:12px;background:#0d1724}
 .source-title{color:#8293a8;font-size:9px;font-weight:800;letter-spacing:.15em}
