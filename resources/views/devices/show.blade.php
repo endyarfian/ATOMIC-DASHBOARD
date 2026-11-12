@@ -14,19 +14,36 @@
 .brand-mark svg{display:block;width:24px;height:24px;stroke:currentColor;stroke-width:1.8}
 .nav-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 19px;width:19px;height:19px}
 .nav-icon svg{display:block;width:17px;height:17px;stroke:currentColor;stroke-width:1.9;flex:none}
+
+/* Shared A.T.O.M. topbar and data-source component */
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:24px;border-bottom:1px solid rgba(34,48,68,.8)}
+.topbar .eyebrow{color:var(--cyan);font-size:9px;font-weight:850;letter-spacing:.2em;text-transform:uppercase}
+.topbar h1{margin:8px 0 5px;color:#f3f7fc;font-size:clamp(25px,3vw,34px);line-height:1.1;letter-spacing:-.055em}
+.topbar .subtitle{color:var(--muted);font-size:11px}
+.live-badge{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(183,243,107,.24);border-radius:8px;background:rgba(183,243,107,.08);color:var(--lime);font-size:9px;font-weight:850;letter-spacing:.13em;white-space:nowrap}
+.live-badge .state-dot{width:6px;height:6px;flex:0 0 6px}
+.topbar-back{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:9px 13px;border:1px solid #2a3b50;border-radius:8px;background:rgba(20,32,51,.55);color:#cbd7e6;font-size:10px;font-weight:700;white-space:nowrap;text-decoration:none}
+.source-box{padding:14px;border:1px solid #223044;border-radius:12px;background:#0d1724}
+.source-title{color:#8293a8;font-size:9px;font-weight:800;letter-spacing:.15em}
+.source-state{display:flex;align-items:center;gap:8px;margin-top:11px;color:#b7f36b;font-size:11px;font-weight:700}
+.source-state .state-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#b7f36b;box-shadow:0 0 12px rgba(183,243,107,.75)}
+.source-note{margin-top:8px;color:#607087;font-size:9px;line-height:1.6}
+@media(max-width:820px){.source-box{display:none}}
+@media(max-width:600px){.topbar{flex-direction:column;gap:13px}.topbar-back{align-self:flex-start}}
+
 </style>
 </head>
 <body><div class="app">
 <aside class="sidebar"><div class="brand"><div class="brand-mark" aria-label="A.T.O.M."><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg></div><div class="brand-copy"><div class="brand-name">A.T.O.M.</div><div class="brand-caption">BIOMETRIC ACCESS</div></div></div><div class="side-label">Workspace</div>
 <a class="nav-link" href="{{ route('dashboard') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17.5" cy="17.5" r="3.5"/><circle cx="17.5" cy="6.5" r="3.5"/><circle cx="6.5" cy="17.5" r="3.5"/><circle cx="6.5" cy="6.5" r="3.5"/></svg></span><span class="nav-text">Overview</span></a><a class="nav-link active" href="{{ route('devices.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg></span><span class="nav-text">Devices</span></a>
 <a class="nav-link" href="{{ route('operators.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span><span class="nav-text">Operators</span></a><a class="nav-link" href="{{ route('access-logs.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg></span><span class="nav-text">Access logs</span></a><a class="nav-link" href="{{ route('sessions.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></span><span class="nav-text">Sessions</span></a><a class="nav-link" href="{{ route('mqtt-monitor.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6.01 18H6"/><path d="M10.01 18H10"/><path d="M15 10v4"/><path d="M17.84 7.17a4 4 0 0 0-5.66 0"/><path d="M20.66 4.34a8 8 0 0 0-11.31 0"/></svg></span><span class="nav-text">MQTT monitor</span></a>
-<div class="spacer"></div><div class="source">DATA SOURCE<strong>● Read-only connected</strong>atomic_access · monitoring only</div></aside>
+<div class="spacer"></div><div class="source-box"><div class="source-title">DATA SOURCE</div><div class="source-state"><span class="state-dot"></span> Read-only connected</div><div class="source-note">atomic_access database<br>Monitoring mode · no write access</div></div></aside>
 <main class="main">
-<header class="topbar"><div><div class="eyebrow">Device inventory / detail</div><h1>{{ $device->device_name ?: 'Unnamed device' }}</h1><div class="subtitle">{{ $device->device_id }}</div></div><a class="back" href="{{ route('devices.index') }}">← Back to devices</a></header>
+<header class="topbar"><div><div class="eyebrow">Device inventory / detail</div><h1>{{ $device->device_name ?: 'Unnamed device' }}</h1><div class="subtitle">{{ $device->device_id }}</div></div><a class="back topbar-back" href="{{ route('devices.index') }}">← Back to devices</a></header>
 <section class="grid">
 <article class="card"><div class="label">Connection status</div><div class="value {{ $device->status === 'online' ? 'green' : 'red' }}">{{ strtoupper($device->status ?: 'UNKNOWN') }}</div></article>
 <article class="card"><div class="label">Firmware version</div><div class="value">{{ $device->firmware_version ?: '—' }}</div></article>
-<article class="card"><div class="label">Last heartbeat / last seen</div><div class="value" style="font-size:15px">{{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen)->format('d M Y, H:i:s') . ' WIB' : 'Never' }}</div></article>
+<article class="card"><div class="label">Last heartbeat / last seen</div><div class="value" style="font-size:15px">{{ $device->last_seen ? \Illuminate\Support\Carbon::parse($device->last_seen, 'UTC')->setTimezone('Asia/Jakarta')->format('d M Y, H:i:s') . ' WIB' : 'Never' }}</div></article>
 <article class="card"><div class="label">Total access events</div><div class="value">{{ number_format($totalEvents) }}</div></article>
 <article class="card"><div class="label">Granted events</div><div class="value green">{{ number_format($grantedEvents) }}</div></article>
 <article class="card"><div class="label">Denied events</div><div class="value red">{{ number_format($deniedEvents) }}</div></article>
@@ -38,7 +55,7 @@
 </tbody></table></div></section>
 <section class="panel"><h2>Recent access events · latest 10</h2><div class="table-wrap"><table><thead><tr><th>Time</th><th>Operator</th><th>Fingerprint slot</th><th>Result</th><th>Reason</th></tr></thead><tbody>
 @forelse($recentEvents as $event)
-<tr><td>{{ $event->event_at ? \Illuminate\Support\Carbon::parse($event->event_at)->format('d M Y, H:i:s') : '—' }}</td><td>{{ $event->operator_name ?: 'Unknown operator' }}<div class="sub">DB ID · {{ $event->operator_db_id ?: '—' }}</div></td><td>{{ $event->fingerprint_slot ?? '—' }}</td><td><span class="status {{ $event->result === 'granted' ? '' : 'denied' }}">{{ $event->result }}</span></td><td>{{ $event->reason ?: '—' }}</td></tr>
+<tr><td>{{ $event->event_at ? \Illuminate\Support\Carbon::parse($event->event_at)->format('d M Y, H:i:s') : '—' }}</td><td>{{ $event->operator_name ?: 'Unknown operator' }}<div class="subtitle">DB ID · {{ $event->operator_db_id ?: '—' }}</div></td><td>{{ $event->fingerprint_slot ?? '—' }}</td><td><span class="status {{ $event->result === 'granted' ? '' : 'denied' }}">{{ $event->result }}</span></td><td>{{ $event->reason ?: '—' }}</td></tr>
 @empty
 <tr><td colspan="5" class="empty">No access events recorded for this device.</td></tr>
 @endforelse
