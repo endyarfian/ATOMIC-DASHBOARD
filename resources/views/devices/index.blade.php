@@ -61,7 +61,7 @@
 </tbody></table></div>
 <div class="pagination"><span>Page {{ $devices->currentPage() }} of {{ max(1, $devices->lastPage()) }}</span><div style="display:flex;gap:8px"><a class="{{ $devices->onFirstPage() ? 'disabled' : '' }}" href="{{ $devices->previousPageUrl() ?: '#' }}">← Previous</a><a class="{{ $devices->hasMorePages() ? '' : 'disabled' }}" href="{{ $devices->nextPageUrl() ?: '#' }}">Next →</a></div></div>
 </section>
-<footer><span>A.T.O.M. · Access Tracking and Operational Monitoring</span><span>Read-only monitoring · Asia/Jakarta</span></footer>
+<footer><span>A.T.O.M. · Access Tracking and Operational Monitoring. © {{ now()->year }} ENLISTERS TECHNOLOGIES</span><span>Read-only monitoring · Asia/Jakarta</span></footer>
 </main></div>
 <script>
     // Refresh connection status periodically so heartbeat timeouts appear without manual reload.
