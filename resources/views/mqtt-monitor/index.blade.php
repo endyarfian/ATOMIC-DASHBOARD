@@ -19,6 +19,23 @@ details{min-width:240px;max-width:440px}summary{color:var(--cyan);font-size:9px;
 .brand-mark svg{display:block;width:24px;height:24px;stroke:currentColor;stroke-width:1.8}
 .nav-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 19px;width:19px;height:19px}
 .nav-icon svg{display:block;width:17px;height:17px;stroke:currentColor;stroke-width:1.9;flex:none}
+
+/* Shared A.T.O.M. topbar and data-source component */
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:24px;border-bottom:1px solid rgba(34,48,68,.8)}
+.topbar .eyebrow{color:var(--cyan);font-size:9px;font-weight:850;letter-spacing:.2em;text-transform:uppercase}
+.topbar h1{margin:8px 0 5px;color:#f3f7fc;font-size:clamp(25px,3vw,34px);line-height:1.1;letter-spacing:-.055em}
+.topbar .subtitle{color:var(--muted);font-size:11px}
+.live-badge{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(183,243,107,.24);border-radius:8px;background:rgba(183,243,107,.08);color:var(--lime);font-size:9px;font-weight:850;letter-spacing:.13em;white-space:nowrap}
+.live-badge .state-dot{width:6px;height:6px;flex:0 0 6px}
+.topbar-back{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:9px 13px;border:1px solid #2a3b50;border-radius:8px;background:rgba(20,32,51,.55);color:#cbd7e6;font-size:10px;font-weight:700;white-space:nowrap;text-decoration:none}
+.source-box{padding:14px;border:1px solid #223044;border-radius:12px;background:#0d1724}
+.source-title{color:#8293a8;font-size:9px;font-weight:800;letter-spacing:.15em}
+.source-state{display:flex;align-items:center;gap:8px;margin-top:11px;color:#b7f36b;font-size:11px;font-weight:700}
+.source-state .state-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#b7f36b;box-shadow:0 0 12px rgba(183,243,107,.75)}
+.source-note{margin-top:8px;color:#607087;font-size:9px;line-height:1.6}
+@media(max-width:820px){.source-box{display:none}}
+@media(max-width:600px){.topbar{flex-direction:column;gap:13px}.topbar-back{align-self:flex-start}}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar"><div class="brand"><div class="brand-mark" aria-label="A.T.O.M."><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg></div><div class="brand-copy"><div class="brand-name">A.T.O.M.</div><div class="brand-caption">BIOMETRIC ACCESS</div></div></div><div class="side-label">Workspace</div>
@@ -28,9 +45,9 @@ details{min-width:240px;max-width:440px}summary{color:var(--cyan);font-size:9px;
 <a class="nav-link" href="{{ route('access-logs.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg></span><span class="nav-text">Access logs</span></a>
 <a class="nav-link" href="{{ route('sessions.index') }}"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></span><span class="nav-text">Sessions</span></a>
 <a class="nav-link active" href="{{ route('mqtt-monitor.index') }}" aria-current="page"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6.01 18H6"/><path d="M10.01 18H10"/><path d="M15 10v4"/><path d="M17.84 7.17a4 4 0 0 0-5.66 0"/><path d="M20.66 4.34a8 8 0 0 0-11.31 0"/></svg></span><span class="nav-text">MQTT monitor</span></a>
-<div class="spacer"></div><div class="source">DATA SOURCE<strong>● Read-only connected</strong>atomic_access.mqtt_messages<br>Monitoring only · no write access</div></aside>
+<div class="spacer"></div><div class="source-box"><div class="source-title">DATA SOURCE</div><div class="source-state"><span class="state-dot"></span> Read-only connected</div><div class="source-note">atomic_access database<br>Monitoring mode · no write access</div></div></aside>
 <main class="main">
-<header class="topbar"><div><div class="eyebrow">Access Tracking and Operational Monitoring / message transport</div><h1>MQTT Monitor</h1><div class="subtitle">Broker message history, subscriber processing status, and payload diagnostics.</div></div><div class="live">● MESSAGE MONITOR</div></header>
+<header class="topbar"><div><div class="eyebrow">Access Tracking and Operational Monitoring / message transport</div><h1>MQTT Monitor</h1><div class="subtitle">Broker message history, subscriber processing status, and payload diagnostics.</div></div><div class="live-badge"><span class="state-dot"></span> MESSAGE MONITOR</div></header>
 <div class="section-head"><h2>Message processing</h2><span class="hint">Source · atomic_access.mqtt_messages</span></div>
 <section class="stats">
 <article class="stat"><div class="stat-label">Matching messages</div><div class="stat-value">{{ number_format($totalMessages) }}</div></article>
@@ -50,7 +67,7 @@ details{min-width:240px;max-width:440px}summary{color:var(--cyan);font-size:9px;
 <div class="table-wrap"><table><thead><tr><th>Message</th><th>Received at (WIB)</th><th>Device</th><th>Topic</th><th>Processing</th><th>Payload / error</th></tr></thead><tbody>
 @forelse($messages as $message)
 <tr>
-<td><div class="topic">#{{ $message->id }}</div><div class="sub">MQTT message ID</div></td>
+<td><div class="topic">#{{ $message->id }}</div><div class="subtitle">MQTT message ID</div></td>
 <td>{{ $message->received_at_wib }}</td>
 <td>{{ $message->device_id ?: '—' }}</td>
 <td><div class="topic">{{ $message->topic }}</div></td>
