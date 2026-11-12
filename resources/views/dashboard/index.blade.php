@@ -352,7 +352,7 @@
         </section>
 
         <footer>
-            <span>A.T.O.M. · Access Tracking and Operational Monitoring</span>
+            <span>A.T.O.M. · Access Tracking and Operational Monitoring. © {{ now()->year }} ENLISTERS TECHNOLOGIES</span>
             <span>Source: atomic_access · Read-only monitoring · Asia/Jakarta</span>
         </footer>
     </main>
